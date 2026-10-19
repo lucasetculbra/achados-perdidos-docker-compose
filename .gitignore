@@ -1,0 +1,25 @@
+# Segredos locais (RNF03): só o modelo .env.example é versionado
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Site gerado pelo MkDocs
+site/
+
+# Backups de volumes podem conter fotos de pessoas: nunca versionar
+backups/
+*.tar.gz
+
+# Temporários de editor / sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

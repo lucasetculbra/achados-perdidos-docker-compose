@@ -1,0 +1,71 @@
+# Achados & Perdidos — ambiente completo: web (Flask/Gunicorn) + db (PostgreSQL).
+# Sobe com:  docker compose up -d --build   (exige o arquivo .env; veja .env.example)
+name: achados-perdidos
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?defina POSTGRES_DB no arquivo .env (copie de .env.example)}
+      POSTGRES_USER: ${POSTGRES_USER:?defina POSTGRES_USER no arquivo .env (copie de .env.example)}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no arquivo .env (copie de .env.example)}
+    volumes:
+      # Dados do PostgreSQL: sobrevivem a "down"; somem com "down -v".
+      - dados_banco:/var/lib/postgresql/data
+      # Executado só na PRIMEIRA inicialização (diretório de dados vazio).
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      # Conexão TCP em 127.0.0.1: o servidor temporário do initdb só escuta no
+      # socket Unix, então o healthcheck só passa quando o banco real está no ar.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    networks:
+      - rede_interna
+    # Sem "ports": o banco só é alcançável pela rede interna (como "db:5432").
+
+  web:
+    build: ./app
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB:?defina POSTGRES_DB no arquivo .env (copie de .env.example)}
+      DB_USER: ${POSTGRES_USER:?defina POSTGRES_USER no arquivo .env (copie de .env.example)}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no arquivo .env (copie de .env.example)}
+      UPLOAD_DIR: /app/uploads
+    ports:
+      - "8080:5000"
+    volumes:
+      - fotos:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    # Endurecimento: sistema de arquivos somente leitura (o app só grava em /app/uploads
+    # e em /tmp), sem capabilities do Linux e sem possibilidade de ganhar privilégios.
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - rede_interna
+
+networks:
+  rede_interna:
+    driver: bridge
+
+volumes:
+  dados_banco:
+  fotos:

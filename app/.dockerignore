@@ -1,0 +1,21 @@
+# Segredos: nunca devem entrar no contexto de build nem na imagem
+.env
+**/.env
+.env.*
+
+# Artefatos do Python
+__pycache__/
+**/__pycache__/
+*.pyc
+**/*.pyc
+*.pyo
+.venv/
+venv/
+
+# Controle de versão, dados locais e documentação (não são usados pela aplicação)
+.git/
+.gitignore
+uploads/
+*.md
+Dockerfile
+.dockerignore

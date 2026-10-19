@@ -1,0 +1,8 @@
+# Fins de linha LF no repositório (scripts e init.sql são executados em Linux)
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
