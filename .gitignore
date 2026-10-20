@@ -3,6 +3,9 @@
 .env.*
 !.env.example
 
+# Ajustes locais do Compose (ex.: trocar a porta 8080): não versionar
+docker-compose.override.yml
+
 # Python
 __pycache__/
 *.py[cod]

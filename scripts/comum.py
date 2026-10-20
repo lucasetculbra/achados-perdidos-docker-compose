@@ -172,7 +172,8 @@ class Checagem:
     req: str
     descricao: str
     ok: bool
-    detalhe: str = ""
+    detalhe: str = ""  # explica uma FALHA
+    info: str = ""  # dado útil mesmo quando passa (ex.: tempos, contagens)
 
 
 @dataclass
@@ -251,7 +252,7 @@ class Ambiente:
         self.env = dict(os.environ)
         for chave in ("COMPOSE_FILE", "COMPOSE_PROFILES", "COMPOSE_PATH_SEPARATOR"):
             self.env.pop(chave, None)
-        self.env.update({"COMPOSE_PROJECT_NAME": projeto, "BUILDKIT_PROGRESS": "plain", "NO_COLOR": "1"})
+        self.env.update({"COMPOSE_PROJECT_NAME": projeto, "BUILDKIT_PROGRESS": "plain", "NO_COLOR": "1", "COMPOSE_FILE": "docker-compose.yml"})
         self.segredos = [v for k, v in ler_env().items() if "PASSWORD" in k.upper() and len(v) >= 8]
         self.curl = shutil.which("curl.exe") or shutil.which("curl") or "curl"
         self.overrides: list[Path] = []
@@ -443,14 +444,13 @@ class Ambiente:
         self._atualizar_compose_file()
 
     def _atualizar_compose_file(self) -> None:
-        if self.overrides:
-            self.env["COMPOSE_FILE"] = os.pathsep.join(["docker-compose.yml", *map(str, self.overrides)])
-        else:
-            self.env.pop("COMPOSE_FILE", None)
+        # sempre explícito: assim um docker-compose.override.yml local do usuário não é carregado
+        # automaticamente e os testes exercitam exatamente o docker-compose.yml entregue
+        self.env["COMPOSE_FILE"] = os.pathsep.join(["docker-compose.yml", *map(str, self.overrides)])
 
     # ---- verificações
-    def checar(self, req: str, descricao: str, ok: bool, detalhe: str = "") -> bool:
-        self.checagens.append(Checagem(req, descricao, bool(ok), detalhe))
+    def checar(self, req: str, descricao: str, ok: bool, detalhe: str = "", info: str = "") -> bool:
+        self.checagens.append(Checagem(req, descricao, bool(ok), detalhe, info))
         print(f"  [{'OK' if ok else 'FALHOU'}] {req}: {descricao}" + (f" -> {detalhe}" if detalhe and not ok else ""), flush=True)
         if EM_CI and not ok:
             print(f"::error title={req}::{descricao} {detalhe}".replace("\n", " "))
@@ -550,8 +550,10 @@ def escrever_resumo(destino: Path, titulo: str, checagens: list[Checagem], rodap
         "|---|---|---|",
     ]
     for c in checagens:
-        detalhe = f" — {c.detalhe}" if c.detalhe else ""
-        linhas.append(f"| {c.req} | {c.descricao}{detalhe} | {'✅ passou' if c.ok else '❌ FALHOU'} |".replace("\n", " "))
+        extra = f" — {c.info}" if c.info else ""
+        if not c.ok and c.detalhe:
+            extra += f" — detalhe: {' '.join(c.detalhe.split())[:160]}"
+        linhas.append(f"| {c.req} | {c.descricao}{extra} | {'✅ passou' if c.ok else '❌ FALHOU'} |".replace("\n", " "))
     if rodape:
         linhas += ["", rodape]
     destino.write_text("\n".join(linhas) + "\n", encoding="utf-8", newline="\n")

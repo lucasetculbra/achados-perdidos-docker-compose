@@ -111,7 +111,7 @@ def q5(amb: Ambiente) -> None:
         amb.checar("Q5", "sem mudanças: pip install e COPY app.py vêm do cache", etapa_em_cache(r2.saida, pip) is True and etapa_em_cache(r2.saida, copia) is True)
         amb.checar("Q5", "só o app.py mudou: pip install CACHED, COPY app.py refeito", etapa_em_cache(r3.saida, pip) is True and etapa_em_cache(r3.saida, copia) is False)
         amb.checar("Q5", "requirements.txt mudou: pip install é refeito", etapa_em_cache(r4.saida, pip) is False)
-        amb.checar("Q5", "reconstruir só com o app.py alterado é mais rápido que reinstalar as dependências", r3.segundos < r4.segundos, f"{r3.segundos:.1f}s x {r4.segundos:.1f}s")
+        amb.checar("Q5", "reconstruir só com o app.py alterado é mais rápido que reinstalar as dependências", r3.segundos < r4.segundos, info=f"só app.py {r3.segundos:.1f}s x requirements.txt {r4.segundos:.1f}s (do zero {r1.segundos:.1f}s, sem mudanças {r2.segundos:.1f}s)")
 
 
 # ---------------------------------------------------------------- Q3: init.sql depois da primeira execução
@@ -157,7 +157,7 @@ def q3(amb: Ambiente) -> None:
         amb.checar("Q3", "com o init.sql alterado, a coluna 'contato' NÃO foi criada", "contato" not in d1.saida)
         amb.checar("Q3", "o ALTER TABLE criou a coluna 'contato'", "contato" in d2.saida)
         contagem = lambda r: re.search(r"(?m)^\s*(\d+)\s*$", r.saida)  # noqa: E731
-        amb.checar("Q3", "nenhuma linha foi perdida (mesma contagem antes e depois da migração)", bool(contagem(antes)) and contagem(antes).group(1) == contagem(depois).group(1) == "4", f"{contagem(antes) and contagem(antes).group(1)} -> {contagem(depois) and contagem(depois).group(1)}")
+        amb.checar("Q3", "nenhuma linha foi perdida (mesma contagem antes e depois da migração)", bool(contagem(antes)) and contagem(antes).group(1) == contagem(depois).group(1) == "4", info=f"{contagem(antes) and contagem(antes).group(1)} linhas antes e {contagem(depois) and contagem(depois).group(1)} depois")
         amb.checar("Q3", "a aplicação continua funcionando depois da migração (GET /itens)", lista.status == 200 and "Item cadastrado antes da alteracao" in lista.corpo)
 
 
@@ -193,7 +193,7 @@ def q7(amb: Ambiente) -> None:
             listas = [ev.cmd(amb.dc("exec", "-T", "--index", str(n), "web", "ls", "/app/uploads")) for n in (1, 2, 3)]
         amb.checar("Q7", "up -d --scale web=3 termina com sucesso (com o nginx e sem porta fixa no web)", r.ok)
         amb.checar("Q7", "existem 3 réplicas do web em execução", len(replicas_web(amb)) == 3)
-        amb.checar("Q7", "as 3 réplicas atendem requisições (campo 'container' do /health tem 3 valores)", len(hosts) == 3, f"{len(hosts)} réplicas distintas")
+        amb.checar("Q7", "as 3 réplicas atendem requisições (campo 'container' do /health tem 3 valores)", len(hosts) == 3, info=f"{len(hosts)} réplicas distintas responderam")
         nomes = [sorted(x.saida.split()) for x in listas]
         amb.checar("Q7", "as 3 réplicas enxergam os mesmos arquivos no volume fotos compartilhado", all(n == nomes[0] for n in nomes) and len(nomes[0]) >= 1, str(nomes[0]))
 

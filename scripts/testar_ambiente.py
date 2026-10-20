@@ -338,7 +338,7 @@ def complementares(amb: Ambiente) -> None:
             t = ev.cmd(["docker", "image", "inspect", f"{p}-web", "--format", "{{.Size}}"])
         try:
             mb = int(t.saida.strip()) / 1_000_000
-            amb.checar("T2", f"imagem do web enxuta (< {TAMANHO_MAXIMO_IMAGEM_MB} MB)", mb < TAMANHO_MAXIMO_IMAGEM_MB, f"{mb:.0f} MB")
+            amb.checar("T2", f"imagem do web enxuta (< {TAMANHO_MAXIMO_IMAGEM_MB} MB)", mb < TAMANHO_MAXIMO_IMAGEM_MB, info=f"docker image inspect: {mb:.0f} MB")
         except ValueError:
             amb.checar("T2", "tamanho da imagem do web medido", False, t.saida[:80])
 
