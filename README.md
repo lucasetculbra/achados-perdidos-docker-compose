@@ -5,7 +5,7 @@
 Avaliação de Grau 1 · **Computação em Nuvem** · Prof. Fábio Castro · autoria: [@lucasetculbra](https://github.com/lucasetculbra)
 
 > NOTE: **Site de documentação.** <https://lucasetculbra.github.io/achados-perdidos-docker-compose/>
-> É publicado automaticamente pelo workflow de CI/CD depois que o GitHub Pages é habilitado e o primeiro push na `main` passa nos testes
+> É publicado automaticamente pelo workflow de CI/CD a cada push na `main` que passa nos testes
 > (veja [CI/CD e GitHub Pages](#cicd-e-github-pages)). O site é **só a documentação**: a aplicação roda no seu computador, com Docker.
 
 ## Objetivo
