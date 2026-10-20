@@ -1,5 +1,5 @@
 # Legenda: Se o web publicasse uma porta fixa no host (como no enunciado básico, 8080:5000), --scale web=3 falha: só um contêiner pode ocupar a porta.
-# Gerado em: 2026-10-19T22:57:08-03:00 | Projeto Compose: achados-perdidos-experimentos
+# Gerado em: 2026-10-20T10:49:01-03:00 | Projeto Compose: achados-perdidos-experimentos
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 $ docker compose up -d --scale web=1
@@ -7,12 +7,12 @@ $ docker compose up -d --scale web=1
  Container achados-perdidos-experimentos-web-1 Running 
  Container achados-perdidos-experimentos-web-3 Stopping 
  Container achados-perdidos-experimentos-web-2 Stopping 
- Container achados-perdidos-experimentos-web-3 Stopped 
- Container achados-perdidos-experimentos-web-3 Removing 
- Container achados-perdidos-experimentos-web-3 Removed 
  Container achados-perdidos-experimentos-web-2 Stopped 
  Container achados-perdidos-experimentos-web-2 Removing 
+ Container achados-perdidos-experimentos-web-3 Stopped 
+ Container achados-perdidos-experimentos-web-3 Removing 
  Container achados-perdidos-experimentos-web-2 Removed 
+ Container achados-perdidos-experimentos-web-3 Removed 
  Container achados-perdidos-experimentos-nginx-1 Running 
  Container achados-perdidos-experimentos-db-1 Waiting 
  Container achados-perdidos-experimentos-db-1 Healthy 
@@ -28,27 +28,27 @@ $ docker compose up -d --scale web=1
 $ docker compose up -d --scale web=3
  Container achados-perdidos-experimentos-db-1 Running 
  Container achados-perdidos-experimentos-web-3 Creating 
- Container achados-perdidos-experimentos-web-2 Creating 
  Container achados-perdidos-experimentos-web-1 Recreate 
- Container achados-perdidos-experimentos-web-2 Created 
+ Container achados-perdidos-experimentos-web-2 Creating 
  Container achados-perdidos-experimentos-web-3 Created 
+ Container achados-perdidos-experimentos-web-2 Created 
  Container achados-perdidos-experimentos-web-1 Recreated 
  Container achados-perdidos-experimentos-nginx-1 Running 
  Container achados-perdidos-experimentos-db-1 Waiting 
  Container achados-perdidos-experimentos-db-1 Healthy 
  Container achados-perdidos-experimentos-web-1 Starting 
  Container achados-perdidos-experimentos-web-1 Started 
- Container achados-perdidos-experimentos-web-2 Starting 
-Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint achados-perdidos-experimentos-web-2 (6757c813a95990d35e8851b3347f4577c20b92fb3ecaae7f620ef03b1c71886a): Bind for 0.0.0.0:18090 failed: port is already allocated
+ Container achados-perdidos-experimentos-web-3 Starting 
+Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint achados-perdidos-experimentos-web-3 (9d441258d704830a74e091d782929d615675faa6695baca7f9e39e9a830aead4): Bind for 0.0.0.0:18090 failed: port is already allocated
 [código de saída: 1]
 
 $ docker compose ps -a
-NAME                                    IMAGE                               COMMAND                  SERVICE   CREATED          STATUS                                     PORTS
-achados-perdidos-experimentos-db-1      postgres:16-alpine                  "docker-entrypoint.s…"   db        22 seconds ago   Up 21 seconds (healthy)                    5432/tcp
-achados-perdidos-experimentos-nginx-1   nginx:1.30-alpine                   "/docker-entrypoint.…"   nginx     51 seconds ago   Up 39 seconds (healthy)                    0.0.0.0:18080->80/tcp, [::]:18080->80/tcp
-achados-perdidos-experimentos-web-1     achados-perdidos-experimentos-web   "gunicorn --bind 0.0…"   web       2 seconds ago    Up Less than a second (health: starting)   0.0.0.0:18090->5000/tcp, [::]:18090->5000/tcp
-achados-perdidos-experimentos-web-2     achados-perdidos-experimentos-web   "gunicorn --bind 0.0…"   web       2 seconds ago    Created                                    
-achados-perdidos-experimentos-web-3     achados-perdidos-experimentos-web   "gunicorn --bind 0.0…"   web       2 seconds ago    Created
+NAME                                    IMAGE                               COMMAND                  SERVICE   CREATED              STATUS                           PORTS
+achados-perdidos-experimentos-db-1      postgres:16-alpine                  "docker-entrypoint.s…"   db        28 seconds ago       Up 26 seconds (healthy)          5432/tcp
+achados-perdidos-experimentos-nginx-1   nginx:1.30-alpine                   "/docker-entrypoint.…"   nginx     About a minute ago   Up 45 seconds (healthy)          0.0.0.0:18080->80/tcp, [::]:18080->80/tcp
+achados-perdidos-experimentos-web-1     achados-perdidos-experimentos-web   "gunicorn --bind 0.0…"   web       3 seconds ago        Up 1 second (health: starting)   0.0.0.0:18090->5000/tcp, [::]:18090->5000/tcp
+achados-perdidos-experimentos-web-2     achados-perdidos-experimentos-web   "gunicorn --bind 0.0…"   web       3 seconds ago        Created                          
+achados-perdidos-experimentos-web-3     achados-perdidos-experimentos-web   "gunicorn --bind 0.0…"   web       3 seconds ago        Created
 
 # Restaurando o desenho final (sem porta fixa no web) e voltando para 1 réplica.
 
@@ -57,10 +57,10 @@ $ docker compose up -d --scale web=1
  Container achados-perdidos-experimentos-web-2 Stopping 
  Container achados-perdidos-experimentos-web-1 Recreate 
  Container achados-perdidos-experimentos-web-3 Stopping 
- Container achados-perdidos-experimentos-web-2 Stopped 
- Container achados-perdidos-experimentos-web-2 Removing 
  Container achados-perdidos-experimentos-web-3 Stopped 
  Container achados-perdidos-experimentos-web-3 Removing 
+ Container achados-perdidos-experimentos-web-2 Stopped 
+ Container achados-perdidos-experimentos-web-2 Removing 
  Container achados-perdidos-experimentos-web-3 Removed 
  Container achados-perdidos-experimentos-web-2 Removed 
  Container achados-perdidos-experimentos-web-1 Recreated 

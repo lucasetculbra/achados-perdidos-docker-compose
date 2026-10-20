@@ -9,7 +9,7 @@ O `app.py` usa `DB_HOST` (padrão `db`) e o Compose define `DB_HOST: db`. Quem r
 presente em todo contêiner de uma rede definida pelo usuário, como a `rede_interna`: ele devolve o IP atual do serviço, que muda a cada
 recriação (aqui `172.21.0.2`), enquanto o nome é estável ([`complementares/03`](evidencias/complementares/03-dns-interno.txt)).
 Com `docker run` na rede *bridge* **padrão** não há esse DNS por nome: o contêiner só alcançaria o outro por IP ou pelo `--link` obsoleto.
-Medido: o `nslookup` na bridge padrão deu `NXDOMAIN`; em uma rede criada com `docker network create`, resolveu
+Medido: o `getent hosts` na bridge padrão não encontrou o nome (código 2); em uma rede criada com `docker network create`, resolveu para `172.21.0.2`
 ([`reflexao/q1`](evidencias/reflexao/q1-dns-bridge-padrao-x-rede-definida.txt)).
 
 ## Q2. Qual a diferença entre volume nomeado e bind mount?
@@ -42,8 +42,8 @@ o Compose espera o banco ficar pronto: na saída real `db-1 Healthy` vem **antes
 
 Cada instrução vira uma **camada** reaproveitada (`CACHED`) se ela e os arquivos que usa não mudaram; mudando uma camada, ela e **todas as seguintes** são refeitas.
 O `requirements.txt` muda pouco e o `app.py` sempre, então copiar e instalar as dependências **antes** do código mantém o `pip install` em cache.
-Medido ([`reflexao/q5`](evidencias/reflexao/q5-cache-de-camadas.txt)): só o `app.py` alterado → `pip install` **`CACHED`** e só o `COPY app.py` refeito (2,5 s);
-`requirements.txt` alterado → `pip install` refeito (11,8 s). Com o `COPY app.py` antes, cada edição de código reinstalaria tudo.
+Medido ([`reflexao/q5`](evidencias/reflexao/q5-cache-de-camadas.txt)): só o `app.py` alterado → `pip install` **`CACHED`** e só o `COPY app.py` refeito (1,8 s);
+`requirements.txt` alterado → `pip install` refeito (52,8 s). Com o `COPY app.py` antes, cada edição de código reinstalaria tudo.
 
 ## Q6. Por que não publicar a porta 5432? LGPD e medidas adicionais
 

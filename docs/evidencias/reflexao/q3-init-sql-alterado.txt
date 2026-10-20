@@ -1,5 +1,5 @@
 # Legenda: Com o volume dados_banco já populado, um init.sql alterado NÃO é reaplicado (initdb é ignorado); a coluna nova só entra com ALTER TABLE, sem perder dados.
-# Gerado em: 2026-10-19T22:56:45-03:00 | Projeto Compose: achados-perdidos-experimentos
+# Gerado em: 2026-10-20T10:48:33-03:00 | Projeto Compose: achados-perdidos-experimentos
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 # PASSO 1 - registrar um item novo (prova de que os dados não se perdem) e o número de linhas
@@ -47,12 +47,12 @@ $ docker compose logs db --tail 30
 db-1  | 
 db-1  | PostgreSQL Database directory appears to contain a database; Skipping initialization
 db-1  | 
-db-1  | 2026-10-20 01:56:30.659 UTC [1] LOG:  starting PostgreSQL 16.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
-db-1  | 2026-10-20 01:56:30.659 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
-db-1  | 2026-10-20 01:56:30.659 UTC [1] LOG:  listening on IPv6 address "::", port 5432
-db-1  | 2026-10-20 01:56:30.677 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
-db-1  | 2026-10-20 01:56:30.696 UTC [29] LOG:  database system was shut down at 2026-10-20 01:56:29 UTC
-db-1  | 2026-10-20 01:56:30.707 UTC [1] LOG:  database system is ready to accept connections
+db-1  | 2026-10-20 13:48:15.503 UTC [1] LOG:  starting PostgreSQL 16.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+db-1  | 2026-10-20 13:48:15.503 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+db-1  | 2026-10-20 13:48:15.503 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+db-1  | 2026-10-20 13:48:15.520 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db-1  | 2026-10-20 13:48:15.550 UTC [30] LOG:  database system was shut down at 2026-10-20 13:48:15 UTC
+db-1  | 2026-10-20 13:48:15.566 UTC [1] LOG:  database system is ready to accept connections
 
 $ docker compose exec -T db sh -c "psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" -c \"\d itens\""
                                         Table "public.itens"
@@ -91,7 +91,7 @@ $ docker compose exec -T db sh -c "psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\
 (1 row)
 
 $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens
-[{"criado_em":"2026-10-20T01:56:28.795069","descricao":"Item cadastrado antes da alteracao","foto":null,"id":4,"local":"Q3"},{"criado_em":"2026-10-20T01:56:12.477214","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T01:56:12.477214","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T01:56:12.477214","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"}]
+[{"criado_em":"2026-10-20T13:48:13.561369","descricao":"Item cadastrado antes da alteracao","foto":null,"id":4,"local":"Q3"},{"criado_em":"2026-10-20T13:47:54.541700","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T13:47:54.541700","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T13:47:54.541700","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"}]
 
 HTTP 200
 

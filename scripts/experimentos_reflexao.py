@@ -48,20 +48,25 @@ def q1(amb: Ambiente) -> None:
             "reflexao/q1-dns-bridge-padrao-x-rede-definida.txt",
             "Na bridge padrão um contêiner não resolve outro pelo nome; em uma rede definida pelo usuário o DNS embutido (127.0.0.11) resolve.",
         ) as ev:
+            ev.nota(
+                "Resolução feita com `getent hosts` (resolvedor da libc): ele respeita a lista de domínios de busca do host. O `nslookup` do BusyBox\n"
+                "acrescenta o domínio de busca do host (ex.: *.cloudapp.net no GitHub Actions) e não tenta o nome puro, o que dá falso NXDOMAIN."
+            )
             ev.nota("A) Rede bridge PADRÃO (docker run sem --network): sobe um contêiner e tenta resolver o nome dele a partir de outro.")
             ev.cmd(["docker", "run", "-d", "--name", a, ALPINE, "sleep", "300"])
             ev.cmd(["docker", "run", "--rm", ALPINE, "cat", "/etc/resolv.conf"])
-            r1 = ev.cmd(["docker", "run", "--rm", ALPINE, "nslookup", a], check=False)
+            r1 = ev.cmd(["docker", "run", "--rm", ALPINE, "getent", "hosts", a], check=False)
+            ev.nota(f"(código de saída do getent acima: {r1.codigo}; 2 = nome não encontrado)")
             ev.nota("B) Rede DEFINIDA PELO USUÁRIO (como a rede_interna do Compose): o mesmo teste.")
             ev.cmd(["docker", "network", "create", rede])
             ev.cmd(["docker", "run", "-d", "--name", b, "--network", rede, ALPINE, "sleep", "300"])
             ip = ev.cmd(["docker", "inspect", b, "--format", f'IP de {b}: {{{{(index .NetworkSettings.Networks "{rede}").IPAddress}}}}'])
-            ev.cmd(["docker", "run", "--rm", "--network", rede, ALPINE, "cat", "/etc/resolv.conf"])
-            r2 = ev.cmd(["docker", "run", "--rm", "--network", rede, ALPINE, "nslookup", b], check=False)
+            conf = ev.cmd(["docker", "run", "--rm", "--network", rede, ALPINE, "cat", "/etc/resolv.conf"])
+            r2 = ev.cmd(["docker", "run", "--rm", "--network", rede, ALPINE, "getent", "hosts", b], check=False)
         ip_b = ip.saida.strip().split()[-1] if ip.ok and ip.saida.strip() else "?"
-        amb.checar("Q1", "na rede bridge padrão o nome do outro contêiner NÃO é resolvido", r1.codigo != 0, r1.saida.strip()[-80:])
+        amb.checar("Q1", "na rede bridge padrão o nome do outro contêiner NÃO é resolvido", r1.codigo != 0 and not r1.saida.strip(), r1.saida.strip()[-80:])
         amb.checar("Q1", "em rede definida pelo usuário o nome é resolvido para o IP do contêiner", r2.ok and ip_b != "?" and ip_b in r2.saida, r2.saida.strip()[-80:])
-        amb.checar("Q1", "o resolvedor da rede definida é o DNS embutido 127.0.0.11", "127.0.0.11" in r2.saida)
+        amb.checar("Q1", "o resolvedor da rede definida é o DNS embutido 127.0.0.11", "nameserver 127.0.0.11" in conf.saida)
 
 
 # ---------------------------------------------------------------- Q5: cache de camadas

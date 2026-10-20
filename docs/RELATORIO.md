@@ -74,10 +74,10 @@ limpa de `app/`, sem mexer nos arquivos do repositório):
 
 | Build | `RUN pip install` | `COPY app.py` | Tempo medido |
 |---|---|---|---|
-| Do zero (`--no-cache`) | executado | executado | 13,1 s |
-| Nada mudou | `CACHED` | `CACHED` | 1,5 s |
-| **Só o `app.py` mudou** | **`CACHED`** | refeito | **2,5 s** |
-| O `requirements.txt` mudou | refeito | refeito | 11,8 s |
+| Do zero (`--no-cache`) | executado | executado | 41,1 s |
+| Nada mudou | `CACHED` | `CACHED` | 1,1 s |
+| **Só o `app.py` mudou** | **`CACHED`** | refeito | **1,8 s** |
+| O `requirements.txt` mudou | refeito | refeito | 52,8 s |
 
 Os tempos dependem da máquina e da rede; o que não muda é o padrão `CACHED`/refeito, conferido automaticamente pelo experimento
 ([`reflexao/q5-cache-de-camadas.txt`](evidencias/reflexao/q5-cache-de-camadas.txt) e a resposta da [Q5](REFLEXAO.md#q5-cache-de-camadas-do-dockerfile)).
