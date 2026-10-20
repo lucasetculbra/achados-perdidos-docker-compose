@@ -106,13 +106,15 @@ def segredos() -> None:
         print("  (sem .env local: comparações com a senha real foram puladas)")
 
     # senhas literais nos arquivos de infraestrutura: o valor precisa vir de variável (${VAR}, $VAR) ou de código ({...})
-    padrao = re.compile(r"""(?i)\b\w*(password|passwd|secret|token)\w*\s*[:=]\s*(?!['"]?\{)['"]?[^\s'",#]{3,}""")
+    padrao = re.compile(r"""(?i)\b\w*(password|passwd|secret|token)\w*\s*[:=]\s*(?!['"]?\{)['"]?([^\s'",#]{3,})""")
+    niveis_de_permissao = {"read", "write", "none"}  # "id-token: write" é permissão do GitHub Actions, não um segredo
     suspeitos = []
     for rel in ["app/Dockerfile", "docker-compose.yml", "app/app.py", "nginx/default.conf", *sorted(p.relative_to(RAIZ).as_posix() for p in (RAIZ / ".github/workflows").glob("*.yml"))]:
         if (RAIZ / rel).exists():
             for n, linha in enumerate(ler(rel).splitlines(), 1):
                 sem_variaveis = re.sub(r"\$\{[^}]*\}|\$\w+", "", linha)  # ${POSTGRES_PASSWORD:?msg}, $PW...
-                if padrao.search(sem_variaveis) and not linha.strip().startswith("#"):
+                achou = padrao.search(sem_variaveis)
+                if achou and achou.group(2).lower() not in niveis_de_permissao and not linha.strip().startswith("#"):
                     suspeitos.append(f"{rel}:{n}")
     checar("RNF03", "nenhuma senha escrita no Dockerfile, no docker-compose.yml, no código ou nos workflows", not suspeitos, ", ".join(suspeitos))
 

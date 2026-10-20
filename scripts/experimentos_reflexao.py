@@ -15,6 +15,7 @@ import re
 import shutil
 import sys
 import time
+import uuid
 from pathlib import Path
 
 from comum import (
@@ -73,26 +74,34 @@ def etapa_em_cache(saida: str, trecho: str) -> bool | None:
 
 
 def q5(amb: Ambiente) -> None:
+    def contexto(nome: str, arquivo: str | None = None, texto: str = "") -> list[str]:
+        """Comando de build sobre uma CÓPIA NOVA de app/ (como um checkout limpo); `arquivo` recebe `texto` no fim."""
+        destino = amb.tmp / nome
+        shutil.copytree(RAIZ / "app", destino)
+        if arquivo:
+            with open(destino / arquivo, "a", encoding="utf-8", newline="\n") as f:
+                f.write(texto)
+        return ["docker", "build", "--progress=plain", "-t", IMAGEM_CACHE, str(destino)]
+
     with etapa("Q5 - cache de camadas do Dockerfile"):
-        ctx = amb.tmp / "contexto-build"
-        shutil.copytree(RAIZ / "app", ctx)
-        build = ["docker", "build", "--progress=plain", "-t", IMAGEM_CACHE, str(ctx)]
         with amb.evidencia(
             "reflexao/q5-cache-de-camadas.txt",
             "Build com cache: sem mudanças tudo é reaproveitado; mudando só o app.py o pip install continua em cache; mudando o requirements.txt ele é refeito.",
         ) as ev:
+            marca = uuid.uuid4().hex[:8]
+            ev.nota(
+                "Cada build usa uma cópia nova da pasta app/ (como um checkout limpo da CI); o app.py e o requirements.txt do repositório NÃO são alterados.\n"
+                f"O cache do Docker é endereçado por CONTEÚDO: por isso o comentário acrescentado nas cópias leva um texto único desta execução ({marca}).\n"
+                "Se o mesmo conteúdo já tivesse sido construído antes, o Docker o reaproveitaria (acerto de cache legítimo) e o experimento não mostraria a invalidação."
+            )
             ev.nota("1) Build do zero (--no-cache): todas as etapas são executadas.")
-            r1 = ev.cmd([*build[:2], "--no-cache", *build[2:]], timeout=900)
-            ev.nota("2) Mesmo contexto, nada mudou: todas as etapas vêm do cache.")
-            r2 = ev.cmd(build, timeout=900)
-            ev.nota("3) Só o app.py mudou (acrescentei um comentário em uma CÓPIA do app.py): o pip install continua em cache e só a cópia do código é refeita.")
-            with open(ctx / "app.py", "a", encoding="utf-8", newline="\n") as f:
-                f.write("\n# alteracao de teste (experimento Q5)\n")
-            r3 = ev.cmd(build, timeout=900)
-            ev.nota("4) O requirements.txt mudou (comentário em uma CÓPIA): a camada do pip install é invalidada e as dependências são reinstaladas.")
-            with open(ctx / "requirements.txt", "a", encoding="utf-8", newline="\n") as f:
-                f.write("# alteracao de teste (experimento Q5)\n")
-            r4 = ev.cmd(build, timeout=900)
+            r1 = ev.cmd(["docker", "build", "--no-cache", *contexto("contexto-1")[2:]], timeout=900)
+            ev.nota("2) Conteúdo idêntico: todas as etapas vêm do cache.")
+            r2 = ev.cmd(contexto("contexto-2"), timeout=900)
+            ev.nota("3) Só o app.py mudou (um comentário acrescentado na CÓPIA): o pip install continua em cache e só a cópia do código é refeita.")
+            r3 = ev.cmd(contexto("contexto-3", "app.py", f"\n# alteracao de teste {marca}\n"), timeout=900)
+            ev.nota("4) O requirements.txt mudou (um comentário acrescentado na CÓPIA): a camada do pip install é invalidada e as dependências são reinstaladas.")
+            r4 = ev.cmd(contexto("contexto-4", "requirements.txt", f"# alteracao de teste {marca}\n"), timeout=900)
             ev.nota(
                 "Tempos medidos (segundos): "
                 f"do zero={r1.segundos:.1f} | sem mudanças={r2.segundos:.1f} | só app.py={r3.segundos:.1f} | requirements.txt={r4.segundos:.1f}"
