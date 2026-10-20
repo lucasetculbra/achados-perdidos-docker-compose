@@ -1,9 +1,9 @@
 # Legenda: docker compose ps: db healthy e web/nginx em execução; só o nginx tem porta publicada no host.
-# Gerado em: 2026-10-19T23:18:00-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Gerado em: 2026-10-19T23:20:27-03:00 | Projeto Compose: achados-perdidos-evidencias
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 $ docker compose ps
 NAME                                  IMAGE                             COMMAND                  SERVICE   CREATED          STATUS                    PORTS
-achados-perdidos-evidencias-db-1      postgres:16-alpine                "docker-entrypoint.s…"   db        20 seconds ago   Up 19 seconds (healthy)   5432/tcp
-achados-perdidos-evidencias-nginx-1   nginx:1.30-alpine                 "/docker-entrypoint.…"   nginx     19 seconds ago   Up 7 seconds (healthy)    0.0.0.0:18080->80/tcp, [::]:18080->80/tcp
-achados-perdidos-evidencias-web-1     achados-perdidos-evidencias-web   "gunicorn --bind 0.0…"   web       20 seconds ago   Up 13 seconds (healthy)   5000/tcp
+achados-perdidos-evidencias-db-1      postgres:16-alpine                "docker-entrypoint.s…"   db        21 seconds ago   Up 19 seconds (healthy)   5432/tcp
+achados-perdidos-evidencias-nginx-1   nginx:1.30-alpine                 "/docker-entrypoint.…"   nginx     20 seconds ago   Up 8 seconds (healthy)    0.0.0.0:18080->80/tcp, [::]:18080->80/tcp
+achados-perdidos-evidencias-web-1     achados-perdidos-evidencias-web   "gunicorn --bind 0.0…"   web       20 seconds ago   Up 14 seconds (healthy)   5000/tcp

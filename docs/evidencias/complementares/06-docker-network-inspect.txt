@@ -1,13 +1,13 @@
 # Legenda: docker network inspect da rede_interna: rede bridge definida pelo usuário com os contêineres db, web e nginx.
-# Gerado em: 2026-10-19T23:18:06-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Gerado em: 2026-10-19T23:20:33-03:00 | Projeto Compose: achados-perdidos-evidencias
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 $ docker network inspect achados-perdidos-evidencias_rede_interna
 [
     {
         "Name": "achados-perdidos-evidencias_rede_interna",
-        "Id": "2506554c33b93e64e44fa2fb1362193356afefbc709ff09969c44da106e2a0ef",
-        "Created": "2026-10-20T02:17:39.794559385Z",
+        "Id": "abbddea402e6cbabd33ceab0ddb8f7097413d92c84d7011e27b3b939af09c4e8",
+        "Created": "2026-10-20T02:20:06.284874847Z",
         "Scope": "local",
         "Driver": "bridge",
         "EnableIPv4": true,
@@ -40,25 +40,25 @@ $ docker network inspect achados-perdidos-evidencias_rede_interna
             "com.docker.compose.version": "5.1.3"
         },
         "Containers": {
-            "8a2a7acc25d3ed206f8fba09845fc4cd4f98995ca314a370e814d4df21a52e77": {
-                "Name": "achados-perdidos-evidencias-db-1",
-                "EndpointID": "243ae614ded3135afc2d30635a49362bf460db9ba6a19a1b2b508489a9b95a9d",
-                "MacAddress": "b6:2c:ce:ee:84:ae",
-                "IPv4Address": "172.21.0.2/16",
+            "2898e96ea2a26008a140c58b41fbde909f94e279c8c5cb84ab2fc931d6bc9c0c": {
+                "Name": "achados-perdidos-evidencias-nginx-1",
+                "EndpointID": "5aee9d9eb1b3c301100323ddc59b3c1499b6bd397d07c477cdacf075cf215e14",
+                "MacAddress": "1a:2c:21:9b:89:87",
+                "IPv4Address": "172.21.0.4/16",
                 "IPv6Address": ""
             },
-            "cc1833ebc5833fd7df7bd4a5fc8c75d9cd30cf456df1c314e3a81b2bed52b9d8": {
+            "410108f7a69fb5321ba462541bac482147c74d76a0f1c997aed9b5c7609aea74": {
                 "Name": "achados-perdidos-evidencias-web-1",
-                "EndpointID": "0bef406ef7df78594e9610e261edd482e40b5323e25d0e300c7c9c9ad460f35e",
-                "MacAddress": "f6:cc:ec:66:7e:1d",
+                "EndpointID": "325dcd4b2e634684da485d01c479864536e4dc2987ddf53e90143e61b784cffd",
+                "MacAddress": "ba:98:46:7c:6d:9c",
                 "IPv4Address": "172.21.0.3/16",
                 "IPv6Address": ""
             },
-            "d52f2af9893e66b431340d8595cb04f037d5e79010571685d46cf4c35a67bb3d": {
-                "Name": "achados-perdidos-evidencias-nginx-1",
-                "EndpointID": "95c86dc1a802bad6ebe0d452b637e78fae3a4624c7d96a6e45513fc87094f576",
-                "MacAddress": "a2:87:ce:94:ba:50",
-                "IPv4Address": "172.21.0.4/16",
+            "bf63a62039d9a475942f10aecbafcf4346362a5f9e9b9da83e734b2192113fa6": {
+                "Name": "achados-perdidos-evidencias-db-1",
+                "EndpointID": "fbc6fbd0efc99f248aa75ecfecbd6e4a72b1fcadb191fa1080dd4ae61e1e15d0",
+                "MacAddress": "1e:35:58:a5:26:fa",
+                "IPv4Address": "172.21.0.2/16",
                 "IPv6Address": ""
             }
         },

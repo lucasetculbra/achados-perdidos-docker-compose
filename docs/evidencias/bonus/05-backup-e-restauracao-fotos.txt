@@ -1,39 +1,39 @@
 # Legenda: Backup do volume fotos em .tar.gz com um contêiner temporário (docker run --rm) e restauração em um volume novo, com SHA-256 idênticos.
-# Gerado em: 2026-10-19T23:18:39-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Gerado em: 2026-10-19T23:21:06-03:00 | Projeto Compose: achados-perdidos-evidencias
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 $ python scripts/backup_fotos.py backup --volume achados-perdidos-evidencias_fotos --saida <tmp>\backups
-$ docker run --rm --mount type=volume,source=achados-perdidos-evidencias_fotos,target=/origem,readonly --mount type=bind,source=<tmp>\backups,target=/backup alpine:3.24 tar czf /backup/fotos-20261019-231833.tar.gz -C /origem .
+$ docker run --rm --mount type=volume,source=achados-perdidos-evidencias_fotos,target=/origem,readonly --mount type=bind,source=<tmp>\backups,target=/backup alpine:3.24 tar czf /backup/fotos-20261019-232100.tar.gz -C /origem .
 
-backup criado: <tmp>\backups\fotos-20261019-231833.tar.gz (78003 bytes)
+backup criado: <tmp>\backups\fotos-20261019-232100.tar.gz (78377 bytes)
 conteúdo do arquivo:
-$ docker run --rm --mount type=bind,source=<tmp>\backups,target=/backup,readonly alpine:3.24 tar tzvf /backup/fotos-20261019-231833.tar.gz
-drwxr-xr-x 10001/10001         0 2026-10-20 02:18:07 ./
--rw-r--r-- 10001/10001     42238 2026-10-20 02:18:01 ./70097a47e5e74a519f7ed247353cf0ad.png
--rw-r--r-- 10001/10001     25497 2026-10-20 02:18:07 ./2e36313179a74b5b868f17231b71ceb7.png
--rw-r--r-- 10001/10001     31717 2026-10-20 02:18:07 ./f2d873cc37b04c1f9d9b23103bdf80a9.png
+$ docker run --rm --mount type=bind,source=<tmp>\backups,target=/backup,readonly alpine:3.24 tar tzvf /backup/fotos-20261019-232100.tar.gz
+drwxr-xr-x 10001/10001         0 2026-10-20 02:20:33 ./
+-rw-r--r-- 10001/10001     31717 2026-10-20 02:20:33 ./a9d16d519a684cb7830286701df9c072.png
+-rw-r--r-- 10001/10001     42238 2026-10-20 02:20:27 ./a6ed12ba21e947c1a670489ef3658ea8.png
+-rw-r--r-- 10001/10001     25497 2026-10-20 02:20:33 ./32c783b162d541cbb866b32551e656f2.png
 
-$ python scripts/backup_fotos.py restaurar --arquivo <tmp>\backups\fotos-20261019-231833.tar.gz --volume-destino achados-perdidos-evidencias_fotos_restaurado
+$ python scripts/backup_fotos.py restaurar --arquivo <tmp>\backups\fotos-20261019-232100.tar.gz --volume-destino achados-perdidos-evidencias_fotos_restaurado
 $ docker volume create achados-perdidos-evidencias_fotos_restaurado
 achados-perdidos-evidencias_fotos_restaurado
-$ docker run --rm --mount type=volume,source=achados-perdidos-evidencias_fotos_restaurado,target=/destino --mount type=bind,source=<tmp>\backups,target=/backup,readonly alpine:3.24 tar xzf /backup/fotos-20261019-231833.tar.gz -C /destino
+$ docker run --rm --mount type=volume,source=achados-perdidos-evidencias_fotos_restaurado,target=/destino --mount type=bind,source=<tmp>\backups,target=/backup,readonly alpine:3.24 tar xzf /backup/fotos-20261019-232100.tar.gz -C /destino
 
 restaurado no volume 'achados-perdidos-evidencias_fotos_restaurado'. Conteúdo (com dono numérico):
 $ docker run --rm --mount type=volume,source=achados-perdidos-evidencias_fotos_restaurado,target=/destino,readonly alpine:3.24 ls -ln /destino
 total 104
--rw-r--r--    1 10001    10001        25497 Oct 20 02:18 2e36313179a74b5b868f17231b71ceb7.png
--rw-r--r--    1 10001    10001        42238 Oct 20 02:18 70097a47e5e74a519f7ed247353cf0ad.png
--rw-r--r--    1 10001    10001        31717 Oct 20 02:18 f2d873cc37b04c1f9d9b23103bdf80a9.png
+-rw-r--r--    1 10001    10001        25497 Oct 20 02:20 32c783b162d541cbb866b32551e656f2.png
+-rw-r--r--    1 10001    10001        42238 Oct 20 02:20 a6ed12ba21e947c1a670489ef3658ea8.png
+-rw-r--r--    1 10001    10001        31717 Oct 20 02:20 a9d16d519a684cb7830286701df9c072.png
 
 $ docker run --rm --mount type=volume,source=achados-perdidos-evidencias_fotos,target=/dados,readonly alpine:3.24 sh -c "cd /dados && sha256sum * | sort -k2"
-4eb76ef0179af808ca892d317cf5032fb1fcb2a5d2b678e494989978d282195f  2e36313179a74b5b868f17231b71ceb7.png
-45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1  70097a47e5e74a519f7ed247353cf0ad.png
-259d5a6abf3f96d346f3990bf9f94893227b418e6b7105eadb23187c4b88ec74  f2d873cc37b04c1f9d9b23103bdf80a9.png
+4eb76ef0179af808ca892d317cf5032fb1fcb2a5d2b678e494989978d282195f  32c783b162d541cbb866b32551e656f2.png
+45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1  a6ed12ba21e947c1a670489ef3658ea8.png
+259d5a6abf3f96d346f3990bf9f94893227b418e6b7105eadb23187c4b88ec74  a9d16d519a684cb7830286701df9c072.png
 
 $ docker run --rm --mount type=volume,source=achados-perdidos-evidencias_fotos_restaurado,target=/dados,readonly alpine:3.24 sh -c "cd /dados && sha256sum * | sort -k2"
-4eb76ef0179af808ca892d317cf5032fb1fcb2a5d2b678e494989978d282195f  2e36313179a74b5b868f17231b71ceb7.png
-45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1  70097a47e5e74a519f7ed247353cf0ad.png
-259d5a6abf3f96d346f3990bf9f94893227b418e6b7105eadb23187c4b88ec74  f2d873cc37b04c1f9d9b23103bdf80a9.png
+4eb76ef0179af808ca892d317cf5032fb1fcb2a5d2b678e494989978d282195f  32c783b162d541cbb866b32551e656f2.png
+45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1  a6ed12ba21e947c1a670489ef3658ea8.png
+259d5a6abf3f96d346f3990bf9f94893227b418e6b7105eadb23187c4b88ec74  a9d16d519a684cb7830286701df9c072.png
 
 # Os dois volumes (original e restaurado) têm exatamente os mesmos arquivos com os mesmos SHA-256 se as duas listas acima forem iguais.
 

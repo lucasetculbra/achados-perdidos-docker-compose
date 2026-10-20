@@ -1,5 +1,5 @@
 # Legenda: O contêiner web roda como 'appuser' (UID 10001), nunca como root (RNF04).
-# Gerado em: 2026-10-19T23:18:04-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Gerado em: 2026-10-19T23:20:30-03:00 | Projeto Compose: achados-perdidos-evidencias
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 $ docker compose exec -T web whoami

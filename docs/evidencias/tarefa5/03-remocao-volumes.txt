@@ -1,5 +1,5 @@
 # Legenda: docker compose down -v apaga os volumes: itens e fotos cadastrados somem e o init.sql recria os 3 itens de exemplo (contraprova do RNF02).
-# Gerado em: 2026-10-19T23:19:02-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Gerado em: 2026-10-19T23:21:29-03:00 | Projeto Compose: achados-perdidos-evidencias
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 # PASSO 0 - estatísticas antes
@@ -10,7 +10,7 @@ $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas
 HTTP 200
 
 $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens
-[{"criado_em":"2026-10-20T02:18:07.192227","descricao":"Mochila azul","foto":"/fotos/f2d873cc37b04c1f9d9b23103bdf80a9.png","id":7,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:18:07.118302","descricao":"Carregador de celular","foto":"/fotos/2e36313179a74b5b868f17231b71ceb7.png","id":6,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:18:01.472422","descricao":"Chave de armario","foto":null,"id":5,"local":"Cantina"},{"criado_em":"2026-10-20T02:18:01.386688","descricao":"Oculos de grau","foto":"/fotos/70097a47e5e74a519f7ed247353cf0ad.png","id":4,"local":"Bloco B"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"}]
+[{"criado_em":"2026-10-20T02:20:33.953590","descricao":"Mochila azul","foto":"/fotos/a9d16d519a684cb7830286701df9c072.png","id":7,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:20:33.897895","descricao":"Carregador de celular","foto":"/fotos/32c783b162d541cbb866b32551e656f2.png","id":6,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:20:28.035043","descricao":"Chave de armario","foto":null,"id":5,"local":"Cantina"},{"criado_em":"2026-10-20T02:20:27.970278","descricao":"Oculos de grau","foto":"/fotos/a6ed12ba21e947c1a670489ef3658ea8.png","id":4,"local":"Bloco B"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"}]
 
 HTTP 200
 
@@ -29,8 +29,8 @@ $ docker compose down -v
  Container achados-perdidos-evidencias-db-1 Stopped 
  Container achados-perdidos-evidencias-db-1 Removing 
  Container achados-perdidos-evidencias-db-1 Removed 
- Volume achados-perdidos-evidencias_dados_banco Removing 
  Network achados-perdidos-evidencias_rede_interna Removing 
+ Volume achados-perdidos-evidencias_dados_banco Removing 
  Volume achados-perdidos-evidencias_fotos Removing 
  Volume achados-perdidos-evidencias_dados_banco Removed 
  Volume achados-perdidos-evidencias_fotos Removed 
@@ -73,14 +73,14 @@ $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas
 HTTP 200
 
 $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens
-[{"criado_em":"2026-10-20T02:18:45.212765","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:18:45.212765","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:18:45.212765","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"}]
+[{"criado_em":"2026-10-20T02:21:11.852894","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:21:11.852894","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:21:11.852894","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"}]
 
 HTTP 200
 
-$ curl.exe -s -I http://localhost:18080/fotos/f2d873cc37b04c1f9d9b23103bdf80a9.png
+$ curl.exe -s -I http://localhost:18080/fotos/a9d16d519a684cb7830286701df9c072.png
 HTTP/1.1 404 NOT FOUND
 Server: nginx
-Date: Tue, 20 Oct 2026 02:19:02 GMT
+Date: Tue, 20 Oct 2026 02:21:28 GMT
 Content-Type: text/html; charset=utf-8
 Content-Length: 207
 Connection: keep-alive
@@ -112,10 +112,8 @@ db-1  | selecting default time zone ... UTC
 db-1  | creating configuration files ... ok
 db-1  | running bootstrap script ... ok
 db-1  | sh: locale: not found
-db-1  | 2026-10-20 02:18:43.710 UTC [35] WARNING:  no usable system locales were found
+db-1  | 2026-10-20 02:21:10.469 UTC [35] WARNING:  no usable system locales were found
 db-1  | performing post-bootstrap initialization ... ok
-db-1  | initdb: warning: enabling "trust" authentication for local connections
-db-1  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
 db-1  | syncing data to disk ... ok
 db-1  | 
 db-1  | 
@@ -123,10 +121,12 @@ db-1  | Success. You can now start the database server using:
 db-1  | 
 db-1  |     pg_ctl -D /var/lib/postgresql/data -l logfile start
 db-1  | 
-db-1  | waiting for server to start....2026-10-20 02:18:45.003 UTC [41] LOG:  starting PostgreSQL 16.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
-db-1  | 2026-10-20 02:18:45.016 UTC [41] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
-db-1  | 2026-10-20 02:18:45.040 UTC [44] LOG:  database system was shut down at 2026-10-20 02:18:44 UTC
-db-1  | 2026-10-20 02:18:45.052 UTC [41] LOG:  database system is ready to accept connections
+db-1  | initdb: warning: enabling "trust" authentication for local connections
+db-1  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+db-1  | waiting for server to start....2026-10-20 02:21:11.659 UTC [41] LOG:  starting PostgreSQL 16.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+db-1  | 2026-10-20 02:21:11.665 UTC [41] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db-1  | 2026-10-20 02:21:11.684 UTC [44] LOG:  database system was shut down at 2026-10-20 02:21:11 UTC
+db-1  | 2026-10-20 02:21:11.694 UTC [41] LOG:  database system is ready to accept connections
 db-1  |  done
 db-1  | server started
 db-1  | CREATE DATABASE
@@ -137,21 +137,21 @@ db-1  | CREATE TABLE
 db-1  | INSERT 0 3
 db-1  | 
 db-1  | 
-db-1  | waiting for server to shut down....2026-10-20 02:18:45.219 UTC [41] LOG:  received fast shutdown request
-db-1  | 2026-10-20 02:18:45.224 UTC [41] LOG:  aborting any active transactions
-db-1  | 2026-10-20 02:18:45.227 UTC [41] LOG:  background worker "logical replication launcher" (PID 47) exited with exit code 1
-db-1  | 2026-10-20 02:18:45.227 UTC [42] LOG:  shutting down
-db-1  | 2026-10-20 02:18:45.233 UTC [42] LOG:  checkpoint starting: shutdown immediate
-db-1  | 2026-10-20 02:18:45.532 UTC [42] LOG:  checkpoint complete: wrote 936 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.027 s, sync=0.253 s, total=0.305 s; sync files=304, longest=0.045 s, average=0.001 s; distance=4288 kB, estimate=4288 kB; lsn=0/1922940, redo lsn=0/1922940
-db-1  | 2026-10-20 02:18:45.537 UTC [41] LOG:  database system is shut down
+db-1  | waiting for server to shut down...2026-10-20 02:21:11.858 UTC [41] LOG:  received fast shutdown request
+db-1  | .2026-10-20 02:21:11.864 UTC [41] LOG:  aborting any active transactions
+db-1  | 2026-10-20 02:21:11.867 UTC [41] LOG:  background worker "logical replication launcher" (PID 47) exited with exit code 1
+db-1  | 2026-10-20 02:21:11.867 UTC [42] LOG:  shutting down
+db-1  | 2026-10-20 02:21:11.873 UTC [42] LOG:  checkpoint starting: shutdown immediate
+db-1  | 2026-10-20 02:21:12.289 UTC [42] LOG:  checkpoint complete: wrote 936 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.026 s, sync=0.372 s, total=0.423 s; sync files=304, longest=0.216 s, average=0.002 s; distance=4288 kB, estimate=4288 kB; lsn=0/1922940, redo lsn=0/1922940
+db-1  | 2026-10-20 02:21:12.295 UTC [41] LOG:  database system is shut down
 db-1  |  done
 db-1  | server stopped
 db-1  | 
 db-1  | PostgreSQL init process complete; ready for start up.
 db-1  | 
-db-1  | 2026-10-20 02:18:45.659 UTC [1] LOG:  starting PostgreSQL 16.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
-db-1  | 2026-10-20 02:18:45.659 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
-db-1  | 2026-10-20 02:18:45.659 UTC [1] LOG:  listening on IPv6 address "::", port 5432
-db-1  | 2026-10-20 02:18:45.672 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
-db-1  | 2026-10-20 02:18:45.686 UTC [59] LOG:  database system was shut down at 2026-10-20 02:18:45 UTC
-db-1  | 2026-10-20 02:18:45.697 UTC [1] LOG:  database system is ready to accept connections
+db-1  | 2026-10-20 02:21:12.396 UTC [1] LOG:  starting PostgreSQL 16.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+db-1  | 2026-10-20 02:21:12.396 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+db-1  | 2026-10-20 02:21:12.396 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+db-1  | 2026-10-20 02:21:12.413 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db-1  | 2026-10-20 02:21:12.434 UTC [59] LOG:  database system was shut down at 2026-10-20 02:21:12 UTC
+db-1  | 2026-10-20 02:21:12.445 UTC [1] LOG:  database system is ready to accept connections

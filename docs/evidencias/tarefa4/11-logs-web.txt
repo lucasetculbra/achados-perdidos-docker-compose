@@ -1,25 +1,25 @@
 # Legenda: docker compose logs web --tail 20: o Gunicorn registra as requisições recebidas pelo web.
-# Gerado em: 2026-10-19T23:18:03-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Gerado em: 2026-10-19T23:20:29-03:00 | Projeto Compose: achados-perdidos-evidencias
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 $ docker compose logs web --tail 20
-web-1  | [2026-10-20 02:17:47 +0000] [1] [INFO] Using worker: sync
-web-1  | [2026-10-20 02:17:47 +0000] [7] [INFO] Booting worker with pid: 7
-web-1  | [2026-10-20 02:17:47 +0000] [8] [INFO] Booting worker with pid: 8
-web-1  | 127.0.0.1 - - [20/Oct/2026:02:17:53 +0000] "GET /health HTTP/1.1" 200 63 "-" "Python-urllib/3.12"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:17:58 +0000] "GET /health HTTP/1.1" 200 63 "-" "Wget"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:00 +0000] "GET /health HTTP/1.1" 200 63 "-" "Python-urllib/3.13"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "GET /health HTTP/1.1" 200 63 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "GET /itens HTTP/1.1" 200 366 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "GET /itens?local=biblio HTTP/1.1" 200 120 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "GET /itens?local=BIBLIO HTTP/1.1" 200 120 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "GET /itens?local=nao-existe HTTP/1.1" 200 3 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "POST /itens HTTP/1.1" 201 55 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "GET /itens HTTP/1.1" 200 516 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "POST /itens HTTP/1.1" 201 21 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "POST /itens HTTP/1.1" 400 57 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "GET /estatisticas HTTP/1.1" 200 41 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "GET /fotos/70097a47e5e74a519f7ed247353cf0ad.png HTTP/1.1" 200 0 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:01 +0000] "HEAD /fotos/70097a47e5e74a519f7ed247353cf0ad.png HTTP/1.1" 200 0 "-" "curl/8.21.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:02 +0000] "GET /fotos/70097a47e5e74a519f7ed247353cf0ad.png HTTP/1.1" 200 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
-web-1  | 172.21.0.4 - - [20/Oct/2026:02:18:02 +0000] "GET /favicon.ico HTTP/1.1" 404 207 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
+web-1  | [2026-10-20 02:20:13 +0000] [7] [INFO] Booting worker with pid: 7
+web-1  | [2026-10-20 02:20:14 +0000] [8] [INFO] Booting worker with pid: 8
+web-1  | 127.0.0.1 - - [20/Oct/2026:02:20:18 +0000] "GET /health HTTP/1.1" 200 63 "-" "Python-urllib/3.12"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:24 +0000] "GET /health HTTP/1.1" 200 63 "-" "Wget"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:27 +0000] "GET /health HTTP/1.1" 200 63 "-" "Python-urllib/3.13"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:27 +0000] "GET /health HTTP/1.1" 200 63 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:27 +0000] "GET /itens HTTP/1.1" 200 366 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:27 +0000] "GET /itens?local=biblio HTTP/1.1" 200 120 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:27 +0000] "GET /itens?local=BIBLIO HTTP/1.1" 200 120 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:27 +0000] "GET /itens?local=nao-existe HTTP/1.1" 200 3 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:27 +0000] "POST /itens HTTP/1.1" 201 55 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:27 +0000] "GET /itens HTTP/1.1" 200 516 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:28 +0000] "POST /itens HTTP/1.1" 201 21 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:28 +0000] "POST /itens HTTP/1.1" 400 57 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:28 +0000] "GET /estatisticas HTTP/1.1" 200 41 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:28 +0000] "GET /fotos/a6ed12ba21e947c1a670489ef3658ea8.png HTTP/1.1" 200 0 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:28 +0000] "HEAD /fotos/a6ed12ba21e947c1a670489ef3658ea8.png HTTP/1.1" 200 0 "-" "curl/8.21.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:29 +0000] "GET /fotos/a6ed12ba21e947c1a670489ef3658ea8.png HTTP/1.1" 200 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
+web-1  | 172.21.0.4 - - [20/Oct/2026:02:20:29 +0000] "GET /favicon.ico HTTP/1.1" 404 207 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
+web-1  | 127.0.0.1 - - [20/Oct/2026:02:20:30 +0000] "GET /health HTTP/1.1" 200 63 "-" "Python-urllib/3.12"

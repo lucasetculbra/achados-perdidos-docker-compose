@@ -1,5 +1,5 @@
 # Legenda: docker compose down + up -d recria os contêineres e, mesmo assim, itens e fotos continuam lá (RNF02).
-# Gerado em: 2026-10-19T23:18:30-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Gerado em: 2026-10-19T23:20:57-03:00 | Projeto Compose: achados-perdidos-evidencias
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 # PASSO 0 - estatísticas antes de começar
@@ -12,12 +12,12 @@ HTTP 200
 # PASSO 1 - cadastrar dois objetos com foto
 
 $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Carregador de celular" -F local=Biblioteca -F foto=@carregador.png http://localhost:18080/itens
-{"foto":"2e36313179a74b5b868f17231b71ceb7.png","id":6}
+{"foto":"32c783b162d541cbb866b32551e656f2.png","id":6}
 
 HTTP 201
 
 $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Mochila azul" -F "local=Laboratorio 3" -F foto=@mochila.png http://localhost:18080/itens
-{"foto":"f2d873cc37b04c1f9d9b23103bdf80a9.png","id":7}
+{"foto":"a9d16d519a684cb7830286701df9c072.png","id":7}
 
 HTTP 201
 
@@ -29,20 +29,20 @@ $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas
 HTTP 200
 
 $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens
-[{"criado_em":"2026-10-20T02:18:07.192227","descricao":"Mochila azul","foto":"/fotos/f2d873cc37b04c1f9d9b23103bdf80a9.png","id":7,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:18:07.118302","descricao":"Carregador de celular","foto":"/fotos/2e36313179a74b5b868f17231b71ceb7.png","id":6,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:18:01.472422","descricao":"Chave de armario","foto":null,"id":5,"local":"Cantina"},{"criado_em":"2026-10-20T02:18:01.386688","descricao":"Oculos de grau","foto":"/fotos/70097a47e5e74a519f7ed247353cf0ad.png","id":4,"local":"Bloco B"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"}]
+[{"criado_em":"2026-10-20T02:20:33.953590","descricao":"Mochila azul","foto":"/fotos/a9d16d519a684cb7830286701df9c072.png","id":7,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:20:33.897895","descricao":"Carregador de celular","foto":"/fotos/32c783b162d541cbb866b32551e656f2.png","id":6,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:20:28.035043","descricao":"Chave de armario","foto":null,"id":5,"local":"Cantina"},{"criado_em":"2026-10-20T02:20:27.970278","descricao":"Oculos de grau","foto":"/fotos/a6ed12ba21e947c1a670489ef3658ea8.png","id":4,"local":"Bloco B"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"}]
 
 HTTP 200
 
 $ docker compose exec -T web sh -c "cd /app/uploads && sha256sum * | sort -k2"
-4eb76ef0179af808ca892d317cf5032fb1fcb2a5d2b678e494989978d282195f  2e36313179a74b5b868f17231b71ceb7.png
-45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1  70097a47e5e74a519f7ed247353cf0ad.png
-259d5a6abf3f96d346f3990bf9f94893227b418e6b7105eadb23187c4b88ec74  f2d873cc37b04c1f9d9b23103bdf80a9.png
+4eb76ef0179af808ca892d317cf5032fb1fcb2a5d2b678e494989978d282195f  32c783b162d541cbb866b32551e656f2.png
+45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1  a6ed12ba21e947c1a670489ef3658ea8.png
+259d5a6abf3f96d346f3990bf9f94893227b418e6b7105eadb23187c4b88ec74  a9d16d519a684cb7830286701df9c072.png
 
 $ docker compose exec -T web ls -l /app/uploads
 total 104
--rw-r--r-- 1 appuser appuser 25497 Oct 20 02:18 2e36313179a74b5b868f17231b71ceb7.png
--rw-r--r-- 1 appuser appuser 42238 Oct 20 02:18 70097a47e5e74a519f7ed247353cf0ad.png
--rw-r--r-- 1 appuser appuser 31717 Oct 20 02:18 f2d873cc37b04c1f9d9b23103bdf80a9.png
+-rw-r--r-- 1 appuser appuser 25497 Oct 20 02:20 32c783b162d541cbb866b32551e656f2.png
+-rw-r--r-- 1 appuser appuser 42238 Oct 20 02:20 a6ed12ba21e947c1a670489ef3658ea8.png
+-rw-r--r-- 1 appuser appuser 31717 Oct 20 02:20 a9d16d519a684cb7830286701df9c072.png
 
 # PASSO 3 - docker compose down (remove contêineres e rede; os volumes são mantidos)
 
@@ -100,17 +100,17 @@ $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas
 HTTP 200
 
 $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens
-[{"criado_em":"2026-10-20T02:18:07.192227","descricao":"Mochila azul","foto":"/fotos/f2d873cc37b04c1f9d9b23103bdf80a9.png","id":7,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:18:07.118302","descricao":"Carregador de celular","foto":"/fotos/2e36313179a74b5b868f17231b71ceb7.png","id":6,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:18:01.472422","descricao":"Chave de armario","foto":null,"id":5,"local":"Cantina"},{"criado_em":"2026-10-20T02:18:01.386688","descricao":"Oculos de grau","foto":"/fotos/70097a47e5e74a519f7ed247353cf0ad.png","id":4,"local":"Bloco B"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"}]
+[{"criado_em":"2026-10-20T02:20:33.953590","descricao":"Mochila azul","foto":"/fotos/a9d16d519a684cb7830286701df9c072.png","id":7,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:20:33.897895","descricao":"Carregador de celular","foto":"/fotos/32c783b162d541cbb866b32551e656f2.png","id":6,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:20:28.035043","descricao":"Chave de armario","foto":null,"id":5,"local":"Cantina"},{"criado_em":"2026-10-20T02:20:27.970278","descricao":"Oculos de grau","foto":"/fotos/a6ed12ba21e947c1a670489ef3658ea8.png","id":4,"local":"Bloco B"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"}]
 
 HTTP 200
 
 $ docker compose exec -T web sh -c "cd /app/uploads && sha256sum * | sort -k2"
-4eb76ef0179af808ca892d317cf5032fb1fcb2a5d2b678e494989978d282195f  2e36313179a74b5b868f17231b71ceb7.png
-45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1  70097a47e5e74a519f7ed247353cf0ad.png
-259d5a6abf3f96d346f3990bf9f94893227b418e6b7105eadb23187c4b88ec74  f2d873cc37b04c1f9d9b23103bdf80a9.png
+4eb76ef0179af808ca892d317cf5032fb1fcb2a5d2b678e494989978d282195f  32c783b162d541cbb866b32551e656f2.png
+45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1  a6ed12ba21e947c1a670489ef3658ea8.png
+259d5a6abf3f96d346f3990bf9f94893227b418e6b7105eadb23187c4b88ec74  a9d16d519a684cb7830286701df9c072.png
 
 $ docker compose exec -T web ls -l /app/uploads
 total 104
--rw-r--r-- 1 appuser appuser 25497 Oct 20 02:18 2e36313179a74b5b868f17231b71ceb7.png
--rw-r--r-- 1 appuser appuser 42238 Oct 20 02:18 70097a47e5e74a519f7ed247353cf0ad.png
--rw-r--r-- 1 appuser appuser 31717 Oct 20 02:18 f2d873cc37b04c1f9d9b23103bdf80a9.png
+-rw-r--r-- 1 appuser appuser 25497 Oct 20 02:20 32c783b162d541cbb866b32551e656f2.png
+-rw-r--r-- 1 appuser appuser 42238 Oct 20 02:20 a6ed12ba21e947c1a670489ef3658ea8.png
+-rw-r--r-- 1 appuser appuser 31717 Oct 20 02:20 a9d16d519a684cb7830286701df9c072.png

@@ -1,5 +1,5 @@
 # Legenda: docker volume ls/inspect: os dois volumes nomeados, onde ficam fisicamente (Mountpoint) e o conteúdo do volume de fotos.
-# Gerado em: 2026-10-19T23:18:33-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Gerado em: 2026-10-19T23:20:59-03:00 | Projeto Compose: achados-perdidos-evidencias
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas
@@ -15,7 +15,7 @@ local     achados-perdidos-evidencias_fotos
 $ docker volume inspect achados-perdidos-evidencias_dados_banco achados-perdidos-evidencias_fotos
 [
     {
-        "CreatedAt": "2026-10-20T02:17:39Z",
+        "CreatedAt": "2026-10-20T02:20:06Z",
         "Driver": "local",
         "Labels": {
             "com.docker.compose.config-hash": "5ce330b65ebeae921fab462c10257966e597f63f17082ace834a52b4b7a67b20",
@@ -29,7 +29,7 @@ $ docker volume inspect achados-perdidos-evidencias_dados_banco achados-perdidos
         "Scope": "local"
     },
     {
-        "CreatedAt": "2026-10-20T02:17:39Z",
+        "CreatedAt": "2026-10-20T02:20:06Z",
         "Driver": "local",
         "Labels": {
             "com.docker.compose.config-hash": "00c844dc5a7bb986f085b1c371a45672492e5d6c03dcb2aa1d238e0874138d96",
@@ -49,9 +49,9 @@ $ docker volume inspect achados-perdidos-evidencias_dados_banco achados-perdidos
 
 $ docker compose exec -T web ls -l /app/uploads
 total 104
--rw-r--r-- 1 appuser appuser 25497 Oct 20 02:18 2e36313179a74b5b868f17231b71ceb7.png
--rw-r--r-- 1 appuser appuser 42238 Oct 20 02:18 70097a47e5e74a519f7ed247353cf0ad.png
--rw-r--r-- 1 appuser appuser 31717 Oct 20 02:18 f2d873cc37b04c1f9d9b23103bdf80a9.png
+-rw-r--r-- 1 appuser appuser 25497 Oct 20 02:20 32c783b162d541cbb866b32551e656f2.png
+-rw-r--r-- 1 appuser appuser 42238 Oct 20 02:20 a6ed12ba21e947c1a670489ef3658ea8.png
+-rw-r--r-- 1 appuser appuser 31717 Oct 20 02:20 a9d16d519a684cb7830286701df9c072.png
 
 $ docker compose exec -T db ls /var/lib/postgresql/data
 PG_VERSION

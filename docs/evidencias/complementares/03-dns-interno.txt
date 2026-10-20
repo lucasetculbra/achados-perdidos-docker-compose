@@ -1,5 +1,5 @@
 # Legenda: O web encontra o banco pelo nome 'db' usando o DNS embutido do Docker (127.0.0.11), sem IP fixo.
-# Gerado em: 2026-10-19T23:18:05-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Gerado em: 2026-10-19T23:20:31-03:00 | Projeto Compose: achados-perdidos-evidencias
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 $ docker compose exec -T web cat /etc/resolv.conf

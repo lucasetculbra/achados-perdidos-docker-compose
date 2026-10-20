@@ -1,13 +1,13 @@
 # Legenda: POST /itens com foto (multipart) devolve 201 e o nome da foto; o item passa a aparecer em GET /itens com a URL /fotos/<nome> (RF03).
-# Gerado em: 2026-10-19T23:18:01-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Gerado em: 2026-10-19T23:20:27-03:00 | Projeto Compose: achados-perdidos-evidencias
 # Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
 
 $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Oculos de grau" -F "local=Bloco B" -F foto=@oculos.png http://localhost:18080/itens
-{"foto":"70097a47e5e74a519f7ed247353cf0ad.png","id":4}
+{"foto":"a6ed12ba21e947c1a670489ef3658ea8.png","id":4}
 
 HTTP 201
 
 $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens
-[{"criado_em":"2026-10-20T02:18:01.386688","descricao":"Oculos de grau","foto":"/fotos/70097a47e5e74a519f7ed247353cf0ad.png","id":4,"local":"Bloco B"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"}]
+[{"criado_em":"2026-10-20T02:20:27.970278","descricao":"Oculos de grau","foto":"/fotos/a6ed12ba21e947c1a670489ef3658ea8.png","id":4,"local":"Bloco B"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:20:10.204917","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"}]
 
 HTTP 200

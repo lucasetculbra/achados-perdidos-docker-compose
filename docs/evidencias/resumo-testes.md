@@ -1,6 +1,6 @@
 # Resumo das verificações automáticas
 
-Gerado em 2026-10-19T23:19:10-03:00 — **66/66 verificações aprovadas**.
+Gerado em 2026-10-19T23:21:36-03:00 — **66/66 verificações aprovadas**.
 
 | Requisito | Verificação | Resultado |
 |---|---|---|
@@ -22,7 +22,7 @@ Gerado em 2026-10-19T23:19:10-03:00 — **66/66 verificações aprovadas**.
 | RF04 | GET /estatisticas após os cadastros da Tarefa 4: 5 itens no banco e 1 fotos no volume | ✅ passou |
 | RF04 | GET /fotos/<nome> -> 200 com o mesmo SHA-256 do arquivo enviado | ✅ passou |
 | RF04 | Content-Type da foto é image/png | ✅ passou |
-| T4 | captura do navegador gerada para /fotos/70097a47e5e74a519f7ed247353cf0ad.... | ✅ passou |
+| T4 | captura do navegador gerada para /fotos/a6ed12ba21e947c1a670489ef3658ea8.... | ✅ passou |
 | T4 | logs do web registram as requisições (POST /itens e GET /health) | ✅ passou |
 | RNF04 | docker compose exec web whoami não retorna root | ✅ passou |
 | RNF04 | o processo do web não tem UID 0 | ✅ passou |
@@ -43,7 +43,7 @@ Gerado em 2026-10-19T23:19:10-03:00 — **66/66 verificações aprovadas**.
 | RNF02 | a lista de itens (ids, textos, fotos, datas) é idêntica depois de down + up | ✅ passou |
 | RNF02 | os arquivos de foto têm os mesmos SHA-256 depois de down + up | ✅ passou |
 | T5.1 | o down manteve os dois volumes nomeados | ✅ passou |
-| T4 | captura do navegador gerada para /fotos/70097a47e5e74a519f7ed247353cf0ad.... | ✅ passou |
+| T4 | captura do navegador gerada para /fotos/a6ed12ba21e947c1a670489ef3658ea8.... | ✅ passou |
 | T5.2 | GET /estatisticas antes da inspeção: 7 itens no banco e 3 fotos no volume | ✅ passou |
 | T5.2 | docker volume inspect mostra os volumes dados_banco e fotos (driver local) com Mountpoint próprio | ✅ passou |
 | T3 | db monta dados_banco em /var/lib/postgresql/data e o init.sql como bind somente leitura | ✅ passou |
