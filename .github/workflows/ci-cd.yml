@@ -139,7 +139,7 @@ jobs:
     needs: [testes, docs]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 30 # a primeira publicação de um site novo do Pages pode demorar mais que 10 min
     permissions:
       contents: read
       pages: write # publicar o artefato no Pages
@@ -157,3 +157,5 @@ jobs:
       - name: Publicar
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          timeout: 1500000 # 25 min (o padrão é 10 min); a ação falha com mensagem clara se estourar
