@@ -1,0 +1,159 @@
+# CI/CD do Achados & Perdidos.
+#
+#   validar  -> configuração, segredos, Dockerfile e o próprio workflow
+#   testes   -> sobe o ambiente de verdade e testa endpoints, persistência e bônus
+#   docs     -> constrói o site de documentação (MkDocs)
+#   deploy   -> publica SOMENTE a documentação no GitHub Pages (só em push na main, depois de testes + docs)
+#
+# O GitHub Pages hospeda a documentação, não a aplicação: a API Flask/PostgreSQL é validada aqui, via Docker.
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Permissão mínima para todos os jobs; o job de deploy declara as suas.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  validar:
+    name: Validar configuração
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # o gitleaks examina o histórico inteiro
+
+      - name: O arquivo .env não pode estar versionado
+        run: |
+          if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+            echo "::error title=.env versionado::O arquivo .env está no Git. Remova com: git rm --cached .env"
+            exit 1
+          fi
+          git check-ignore -q .env || { echo "::error title=.gitignore::.env não está listado no .gitignore"; exit 1; }
+          echo ".env não é versionado e está no .gitignore."
+
+      - name: Verificações estáticas (código fornecido, segredos, Dockerfile, compose, evidências, docs)
+        run: python3 scripts/verificar_config.py --final
+
+      - name: Validar o docker-compose.yml (com e sem o profile debug)
+        run: |
+          docker compose --env-file .env.example config --quiet
+          docker compose --env-file .env.example --profile debug config --quiet
+
+      - name: Lint do Dockerfile (hadolint)
+        run: docker run --rm -i hadolint/hadolint:v2.15.1 < app/Dockerfile
+
+      - name: Lint do workflow (actionlint)
+        run: docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.12 -color
+
+      - name: Procurar segredos no repositório (gitleaks)
+        run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.30.1 git /repo --no-banner --redact --verbose
+
+  testes:
+    name: Testes funcionais e de persistência
+    needs: validar
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v7
+
+      - name: Criar .env efêmero com senha aleatória (existe só nesta execução)
+        run: |
+          senha="$(openssl rand -hex 16)"
+          echo "::add-mask::${senha}"
+          {
+            echo "POSTGRES_DB=achados"
+            echo "POSTGRES_USER=achados_app"
+            echo "POSTGRES_PASSWORD=${senha}"
+          } > .env
+
+      - name: Testes funcionais, de persistência e dos bônus (Tarefas 4 e 5)
+        run: python3 scripts/testar_ambiente.py --projeto achados-perdidos-ci --evidencias evidencias-ci
+
+      - name: Experimentos da reflexão (Q1, Q3, Q5 e Q7)
+        run: python3 scripts/experimentos_reflexao.py --projeto achados-perdidos-experimentos --evidencias evidencias-ci
+
+      - name: Guardar as evidências desta execução
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: evidencias-ci
+          path: evidencias-ci/
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Diagnóstico (só se algo falhou)
+        if: failure()
+        run: |
+          docker ps -a
+          docker compose -p achados-perdidos-ci logs --no-color --tail 100 || true
+
+      - name: Remover os ambientes de teste
+        if: always()
+        run: |
+          docker compose -p achados-perdidos-ci --profile '*' down -v --remove-orphans || true
+          docker compose -p achados-perdidos-experimentos --profile '*' down -v --remove-orphans || true
+
+  docs:
+    name: Construir a documentação (MkDocs)
+    needs: validar
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v7
+
+      - name: Instalar o Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-docs.txt
+
+      - name: Instalar MkDocs e o tema Material
+        run: pip install -r requirements-docs.txt
+
+      - name: Construir o site (qualquer aviso falha o build)
+        run: mkdocs build --strict
+
+      - name: Empacotar o site para o GitHub Pages (somente em push na main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    name: Publicar no GitHub Pages
+    needs: [testes, docs]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write # publicar o artefato no Pages
+      id-token: write # comprovar a origem do deploy (OIDC)
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configurar o Pages (falha com mensagem clara se o Pages não estiver habilitado)
+        uses: actions/configure-pages@v6
+
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v5
