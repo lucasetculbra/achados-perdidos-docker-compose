@@ -1,0 +1,116 @@
+# Legenda: docker compose down + up -d recria os contêineres e, mesmo assim, itens e fotos continuam lá (RNF02).
+# Gerado em: 2026-10-19T23:18:30-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+# PASSO 0 - estatísticas antes de começar
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas
+{"fotos_no_volume":1,"itens_no_banco":5}
+
+HTTP 200
+
+# PASSO 1 - cadastrar dois objetos com foto
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Carregador de celular" -F local=Biblioteca -F foto=@carregador.png http://localhost:18080/itens
+{"foto":"2e36313179a74b5b868f17231b71ceb7.png","id":6}
+
+HTTP 201
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Mochila azul" -F "local=Laboratorio 3" -F foto=@mochila.png http://localhost:18080/itens
+{"foto":"f2d873cc37b04c1f9d9b23103bdf80a9.png","id":7}
+
+HTTP 201
+
+# PASSO 2 - estado ANTES do down
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas
+{"fotos_no_volume":3,"itens_no_banco":7}
+
+HTTP 200
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens
+[{"criado_em":"2026-10-20T02:18:07.192227","descricao":"Mochila azul","foto":"/fotos/f2d873cc37b04c1f9d9b23103bdf80a9.png","id":7,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:18:07.118302","descricao":"Carregador de celular","foto":"/fotos/2e36313179a74b5b868f17231b71ceb7.png","id":6,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:18:01.472422","descricao":"Chave de armario","foto":null,"id":5,"local":"Cantina"},{"criado_em":"2026-10-20T02:18:01.386688","descricao":"Oculos de grau","foto":"/fotos/70097a47e5e74a519f7ed247353cf0ad.png","id":4,"local":"Bloco B"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"}]
+
+HTTP 200
+
+$ docker compose exec -T web sh -c "cd /app/uploads && sha256sum * | sort -k2"
+4eb76ef0179af808ca892d317cf5032fb1fcb2a5d2b678e494989978d282195f  2e36313179a74b5b868f17231b71ceb7.png
+45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1  70097a47e5e74a519f7ed247353cf0ad.png
+259d5a6abf3f96d346f3990bf9f94893227b418e6b7105eadb23187c4b88ec74  f2d873cc37b04c1f9d9b23103bdf80a9.png
+
+$ docker compose exec -T web ls -l /app/uploads
+total 104
+-rw-r--r-- 1 appuser appuser 25497 Oct 20 02:18 2e36313179a74b5b868f17231b71ceb7.png
+-rw-r--r-- 1 appuser appuser 42238 Oct 20 02:18 70097a47e5e74a519f7ed247353cf0ad.png
+-rw-r--r-- 1 appuser appuser 31717 Oct 20 02:18 f2d873cc37b04c1f9d9b23103bdf80a9.png
+
+# PASSO 3 - docker compose down (remove contêineres e rede; os volumes são mantidos)
+
+$ docker compose down
+ Container achados-perdidos-evidencias-nginx-1 Stopping 
+ Container achados-perdidos-evidencias-nginx-1 Stopped 
+ Container achados-perdidos-evidencias-nginx-1 Removing 
+ Container achados-perdidos-evidencias-nginx-1 Removed 
+ Container achados-perdidos-evidencias-web-1 Stopping 
+ Container achados-perdidos-evidencias-web-1 Stopped 
+ Container achados-perdidos-evidencias-web-1 Removing 
+ Container achados-perdidos-evidencias-web-1 Removed 
+ Container achados-perdidos-evidencias-db-1 Stopping 
+ Container achados-perdidos-evidencias-db-1 Stopped 
+ Container achados-perdidos-evidencias-db-1 Removing 
+ Container achados-perdidos-evidencias-db-1 Removed 
+ Network achados-perdidos-evidencias_rede_interna Removing 
+ Network achados-perdidos-evidencias_rede_interna Removed
+
+$ docker compose ps -a
+NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
+
+$ docker volume ls --filter label=com.docker.compose.project=achados-perdidos-evidencias
+DRIVER    VOLUME NAME
+local     achados-perdidos-evidencias_dados_banco
+local     achados-perdidos-evidencias_fotos
+
+# PASSO 4 - docker compose up -d (sem --build)
+
+$ docker compose up -d
+ Network achados-perdidos-evidencias_rede_interna Creating 
+ Network achados-perdidos-evidencias_rede_interna Created 
+ Container achados-perdidos-evidencias-db-1 Creating 
+ Container achados-perdidos-evidencias-db-1 Created 
+ Container achados-perdidos-evidencias-web-1 Creating 
+ Container achados-perdidos-evidencias-web-1 Created 
+ Container achados-perdidos-evidencias-nginx-1 Creating 
+ Container achados-perdidos-evidencias-nginx-1 Created 
+ Container achados-perdidos-evidencias-db-1 Starting 
+ Container achados-perdidos-evidencias-db-1 Started 
+ Container achados-perdidos-evidencias-db-1 Waiting 
+ Container achados-perdidos-evidencias-db-1 Healthy 
+ Container achados-perdidos-evidencias-web-1 Starting 
+ Container achados-perdidos-evidencias-web-1 Started 
+ Container achados-perdidos-evidencias-web-1 Waiting 
+ Container achados-perdidos-evidencias-web-1 Healthy 
+ Container achados-perdidos-evidencias-nginx-1 Starting 
+ Container achados-perdidos-evidencias-nginx-1 Started
+
+# PASSO 5 - estado DEPOIS do up
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas
+{"fotos_no_volume":3,"itens_no_banco":7}
+
+HTTP 200
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens
+[{"criado_em":"2026-10-20T02:18:07.192227","descricao":"Mochila azul","foto":"/fotos/f2d873cc37b04c1f9d9b23103bdf80a9.png","id":7,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:18:07.118302","descricao":"Carregador de celular","foto":"/fotos/2e36313179a74b5b868f17231b71ceb7.png","id":6,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:18:01.472422","descricao":"Chave de armario","foto":null,"id":5,"local":"Cantina"},{"criado_em":"2026-10-20T02:18:01.386688","descricao":"Oculos de grau","foto":"/fotos/70097a47e5e74a519f7ed247353cf0ad.png","id":4,"local":"Bloco B"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"}]
+
+HTTP 200
+
+$ docker compose exec -T web sh -c "cd /app/uploads && sha256sum * | sort -k2"
+4eb76ef0179af808ca892d317cf5032fb1fcb2a5d2b678e494989978d282195f  2e36313179a74b5b868f17231b71ceb7.png
+45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1  70097a47e5e74a519f7ed247353cf0ad.png
+259d5a6abf3f96d346f3990bf9f94893227b418e6b7105eadb23187c4b88ec74  f2d873cc37b04c1f9d9b23103bdf80a9.png
+
+$ docker compose exec -T web ls -l /app/uploads
+total 104
+-rw-r--r-- 1 appuser appuser 25497 Oct 20 02:18 2e36313179a74b5b868f17231b71ceb7.png
+-rw-r--r-- 1 appuser appuser 42238 Oct 20 02:18 70097a47e5e74a519f7ed247353cf0ad.png
+-rw-r--r-- 1 appuser appuser 31717 Oct 20 02:18 f2d873cc37b04c1f9d9b23103bdf80a9.png

@@ -1,0 +1,14 @@
+# Legenda: O sistema de arquivos do web é somente leitura (só /app/uploads e /tmp aceitam escrita) e o init.sql é montado :ro no db.
+# Gerado em: 2026-10-19T23:18:05-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ docker compose exec -T web sh -c "touch /app/teste-gravacao"
+touch: cannot touch '/app/teste-gravacao': Read-only file system
+[código de saída: 1]
+
+$ docker compose exec -T web sh -c "touch /app/uploads/.teste && rm /app/uploads/.teste && echo 'gravacao em /app/uploads: OK'"
+gravacao em /app/uploads: OK
+
+$ docker compose exec -T db sh -c "echo '-- alteracao indevida' >> /docker-entrypoint-initdb.d/init.sql"
+sh: can't create /docker-entrypoint-initdb.d/init.sql: Read-only file system
+[código de saída: 1]

@@ -1,0 +1,43 @@
+# Legenda: Em /fotos/ o nginx força download de arquivos que não são imagem (ex.: .html enviado como foto) e adiciona nosniff e CSP.
+# Gerado em: 2026-10-19T23:19:03-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Arquivo html enviado como foto" -F local=Teste -F foto=@nao-e-foto.html http://localhost:18080/itens
+{"foto":"41f6f8b263134891b807390f2847187e.html","id":5}
+
+HTTP 201
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Foto pequena" -F local=Teste -F foto=@pequena.png http://localhost:18080/itens
+{"foto":"2dc437ba483d4e0b9c763fad474c9e9b.png","id":6}
+
+HTTP 201
+
+$ curl.exe -s -I http://localhost:18080/fotos/41f6f8b263134891b807390f2847187e.html
+HTTP/1.1 200 OK
+Server: nginx
+Date: Tue, 20 Oct 2026 02:19:03 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 29
+Connection: keep-alive
+Last-Modified: Tue, 20 Oct 2026 02:19:03 GMT
+Cache-Control: no-cache
+ETag: "1792462743.555087-29-2116685405"
+Accept-Ranges: bytes
+X-Content-Type-Options: nosniff
+Content-Security-Policy: default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox
+Content-Disposition: attachment
+
+$ curl.exe -s -I http://localhost:18080/fotos/2dc437ba483d4e0b9c763fad474c9e9b.png
+HTTP/1.1 200 OK
+Server: nginx
+Date: Tue, 20 Oct 2026 02:19:03 GMT
+Content-Type: image/png
+Content-Length: 6852
+Connection: keep-alive
+Last-Modified: Tue, 20 Oct 2026 02:19:03 GMT
+Cache-Control: no-cache
+ETag: "1792462743.6214585-6852-2314735460"
+Accept-Ranges: bytes
+X-Content-Type-Options: nosniff
+Content-Security-Policy: default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox
+Content-Disposition: inline

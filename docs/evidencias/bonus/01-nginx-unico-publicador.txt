@@ -1,0 +1,17 @@
+# Legenda: Só o nginx expõe a porta do host; as respostas chegam com 'Server: nginx' (sem versão), passando pelo proxy até o web.
+# Gerado em: 2026-10-19T23:19:03-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ docker compose ps
+NAME                                  IMAGE                             COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+achados-perdidos-evidencias-db-1      postgres:16-alpine                "docker-entrypoint.s…"   db        21 seconds ago   Up 20 seconds (healthy)   5432/tcp
+achados-perdidos-evidencias-nginx-1   nginx:1.30-alpine                 "/docker-entrypoint.…"   nginx     21 seconds ago   Up 7 seconds (healthy)    0.0.0.0:18080->80/tcp, [::]:18080->80/tcp
+achados-perdidos-evidencias-web-1     achados-perdidos-evidencias-web   "gunicorn --bind 0.0…"   web       21 seconds ago   Up 14 seconds (healthy)   5000/tcp
+
+$ curl.exe -s -I http://localhost:18080/health
+HTTP/1.1 200 OK
+Server: nginx
+Date: Tue, 20 Oct 2026 02:19:03 GMT
+Content-Type: application/json
+Content-Length: 63
+Connection: keep-alive

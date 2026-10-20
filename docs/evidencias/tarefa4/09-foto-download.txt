@@ -1,0 +1,26 @@
+# Legenda: GET /fotos/<nome> devolve exatamente o arquivo enviado (mesmo SHA-256) e o nginx acrescenta cabeçalhos de segurança (RF04).
+# Gerado em: 2026-10-19T23:18:01-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ curl.exe -s -o oculos-baixada.png -w "HTTP %{http_code} tipo=%{content_type} bytes=%{size_download}\n" http://localhost:18080/fotos/70097a47e5e74a519f7ed247353cf0ad.png
+HTTP 200 tipo=image/png bytes=42238
+
+$ curl.exe -s -I http://localhost:18080/fotos/70097a47e5e74a519f7ed247353cf0ad.png
+HTTP/1.1 200 OK
+Server: nginx
+Date: Tue, 20 Oct 2026 02:18:01 GMT
+Content-Type: image/png
+Content-Length: 42238
+Connection: keep-alive
+Last-Modified: Tue, 20 Oct 2026 02:18:01 GMT
+Cache-Control: no-cache
+ETag: "1792462681.3716943-42238-2047217363"
+Accept-Ranges: bytes
+X-Content-Type-Options: nosniff
+Content-Security-Policy: default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox
+Content-Disposition: inline
+
+# SHA-256 calculado pelo script de teste (hashlib):
+# enviado : 45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1
+# baixado : 45f2fee734dfb6cd37604e245b01ebf7bb4d4f06582faecd51831ddd245a9de1
+# iguais  : True

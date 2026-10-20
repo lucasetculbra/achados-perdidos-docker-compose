@@ -1,0 +1,9 @@
+# Dependências do SITE de documentação (MkDocs). Não fazem parte da aplicação nem do Docker.
+# Uso local:   pip install -r requirements-docs.txt && mkdocs serve
+# Versões fixas para que o build seja reproduzível (o mesmo resultado aqui e no GitHub Actions).
+mkdocs==1.6.1
+mkdocs-material==9.7.7
+mkdocs-material-extensions==1.3.1
+pymdown-extensions==12.3
+Markdown==3.11.2
+markdown-callouts==0.4.0

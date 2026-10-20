@@ -1,0 +1,78 @@
+# Legenda: O Adminer só sobe com --profile debug, escuta apenas em 127.0.0.1, alcança o db pela rede interna (sem publicar 5432) e é encerrado sozinho.
+# Gerado em: 2026-10-19T23:19:07-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+# PASSO 1 - sem o profile: serviços do ambiente e contêineres existentes (adminer ausente)
+
+$ docker compose config --services
+db
+web
+nginx
+
+$ docker compose ps -a
+NAME                                  IMAGE                             COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+achados-perdidos-evidencias-db-1      postgres:16-alpine                "docker-entrypoint.s…"   db        22 seconds ago   Up 21 seconds (healthy)   5432/tcp
+achados-perdidos-evidencias-nginx-1   nginx:1.30-alpine                 "/docker-entrypoint.…"   nginx     22 seconds ago   Up 8 seconds (healthy)    0.0.0.0:18080->80/tcp, [::]:18080->80/tcp
+achados-perdidos-evidencias-web-1     achados-perdidos-evidencias-web   "gunicorn --bind 0.0…"   web       22 seconds ago   Up 15 seconds (healthy)   5000/tcp
+
+# PASSO 2 - docker compose --profile debug up -d
+
+$ docker compose --profile debug up -d
+ Container achados-perdidos-evidencias-db-1 Running 
+ Container achados-perdidos-evidencias-adminer-1 Creating 
+ Container achados-perdidos-evidencias-web-1 Running 
+ Container achados-perdidos-evidencias-nginx-1 Running 
+ Container achados-perdidos-evidencias-adminer-1 Created 
+ Container achados-perdidos-evidencias-db-1 Waiting 
+ Container achados-perdidos-evidencias-db-1 Waiting 
+ Container achados-perdidos-evidencias-db-1 Healthy 
+ Container achados-perdidos-evidencias-db-1 Healthy 
+ Container achados-perdidos-evidencias-adminer-1 Starting 
+ Container achados-perdidos-evidencias-web-1 Waiting 
+ Container achados-perdidos-evidencias-adminer-1 Started 
+ Container achados-perdidos-evidencias-web-1 Healthy
+
+$ docker compose ps
+NAME                                    IMAGE                             COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+achados-perdidos-evidencias-adminer-1   adminer:6.1.2                     "entrypoint.sh docke…"   adminer   1 second ago     Up Less than a second     127.0.0.1:8081->8080/tcp
+achados-perdidos-evidencias-db-1        postgres:16-alpine                "docker-entrypoint.s…"   db        23 seconds ago   Up 23 seconds (healthy)   5432/tcp
+achados-perdidos-evidencias-nginx-1     nginx:1.30-alpine                 "/docker-entrypoint.…"   nginx     23 seconds ago   Up 10 seconds (healthy)   0.0.0.0:18080->80/tcp, [::]:18080->80/tcp
+achados-perdidos-evidencias-web-1       achados-perdidos-evidencias-web   "gunicorn --bind 0.0…"   web       23 seconds ago   Up 17 seconds (healthy)   5000/tcp
+
+$ curl.exe -sI http://127.0.0.1:8081/
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8081
+Date: Tue, 20 Oct 2026 02:19:06 GMT
+Connection: close
+X-Powered-By: PHP/8.4.26
+Set-Cookie: adminer_sid=********; path=/; HttpOnly; SameSite=lax
+Set-Cookie: adminer_key=********; path=/; HttpOnly; SameSite=lax
+Content-Type: text/html; charset=utf-8
+Cache-Control: no-cache
+X-Frame-Options: deny
+X-XSS-Protection: 0
+X-Content-Type-Options: nosniff
+Referrer-Policy: origin-when-cross-origin
+Content-Security-Policy: script-src 'self' 'unsafe-inline' 'nonce-Mjc2MDAzOTMwMmI5YWM3OGRiZWFlOTUwNjMzNGRiNGM=' 'strict-dynamic'; connect-src 'self' https://www.adminer.org; frame-src https://www.adminer.org; object-src 'none'; base-uri 'none'; form-action 'self'
+Vary: Accept-Encoding
+
+$ docker compose exec -T adminer php -r "$s=@fsockopen('db',5432,$e,$m,3); echo $s ? 'conectado a db:5432 pela rede interna' : 'falhou: '.$m; echo PHP_EOL;"
+conectado a db:5432 pela rede interna
+
+$ docker inspect achados-perdidos-evidencias-db-1 --format "portas do db publicadas no host: {{json .NetworkSettings.Ports}}"
+portas do db publicadas no host: {"5432/tcp":null}
+
+# PASSO 3 - encerrar só o adminer (db, web e nginx continuam)
+
+$ docker compose rm -sf adminer
+ Container achados-perdidos-evidencias-adminer-1 Stopping 
+ Container achados-perdidos-evidencias-adminer-1 Stopped 
+Going to remove achados-perdidos-evidencias-adminer-1
+ Container achados-perdidos-evidencias-adminer-1 Removing 
+ Container achados-perdidos-evidencias-adminer-1 Removed
+
+$ docker compose ps -a
+NAME                                  IMAGE                             COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+achados-perdidos-evidencias-db-1      postgres:16-alpine                "docker-entrypoint.s…"   db        25 seconds ago   Up 24 seconds (healthy)   5432/tcp
+achados-perdidos-evidencias-nginx-1   nginx:1.30-alpine                 "/docker-entrypoint.…"   nginx     25 seconds ago   Up 11 seconds (healthy)   0.0.0.0:18080->80/tcp, [::]:18080->80/tcp
+achados-perdidos-evidencias-web-1     achados-perdidos-evidencias-web   "gunicorn --bind 0.0…"   web       25 seconds ago   Up 18 seconds (healthy)   5000/tcp

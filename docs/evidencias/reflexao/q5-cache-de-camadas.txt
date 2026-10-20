@@ -1,0 +1,306 @@
+# Legenda: Build com cache: sem mudanças tudo é reaproveitado; mudando só o app.py o pip install continua em cache; mudando o requirements.txt ele é refeito.
+# Gerado em: 2026-10-19T22:56:05-03:00 | Projeto Compose: achados-perdidos-experimentos
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+# Cada build usa uma cópia nova da pasta app/ (como um checkout limpo da CI); o app.py e o requirements.txt do repositório NÃO são alterados.
+# O cache do Docker é endereçado por CONTEÚDO: por isso o comentário acrescentado nas cópias leva um texto único desta execução (8b8f7531).
+# Se o mesmo conteúdo já tivesse sido construído antes, o Docker o reaproveitaria (acerto de cache legítimo) e o experimento não mostraria a invalidação.
+
+# 1) Build do zero (--no-cache): todas as etapas são executadas.
+
+$ docker build --no-cache --progress=plain -t achados-perdidos-exp-cache <tmp>\contexto-1
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 DONE 0.0s
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.39kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 0.1s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 360B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 63B done
+#4 DONE 0.1s
+
+#5 [1/6] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 0.1s done
+#5 DONE 0.1s
+
+#6 [2/6] WORKDIR /app
+#6 CACHED
+
+#7 [3/6] RUN groupadd --system --gid 10001 appuser  && useradd --system --uid 10001 --gid appuser --no-create-home --shell /usr/sbin/nologin appuser  && mkdir -p /app/uploads  && chown appuser:appuser /app/uploads
+#7 0.390 useradd warning: appuser's uid 10001 is greater than SYS_UID_MAX 999
+#7 DONE 0.5s
+
+#8 [4/6] COPY requirements.txt .
+#8 DONE 0.2s
+
+#9 [5/6] RUN pip install --no-cache-dir -r requirements.txt
+#9 1.941 Collecting flask==3.0.3 (from -r requirements.txt (line 1))
+#9 2.139   Downloading flask-3.0.3-py3-none-any.whl.metadata (3.2 kB)
+#9 2.226 Collecting psycopg==3.2.3 (from psycopg[binary]==3.2.3->-r requirements.txt (line 2))
+#9 2.271   Downloading psycopg-3.2.3-py3-none-any.whl.metadata (4.3 kB)
+#9 2.343 Collecting gunicorn==23.0.0 (from -r requirements.txt (line 3))
+#9 2.390   Downloading gunicorn-23.0.0-py3-none-any.whl.metadata (4.4 kB)
+#9 2.464 Collecting Werkzeug>=3.0.0 (from flask==3.0.3->-r requirements.txt (line 1))
+#9 2.510   Downloading werkzeug-3.1.9-py3-none-any.whl.metadata (4.1 kB)
+#9 2.571 Collecting Jinja2>=3.1.2 (from flask==3.0.3->-r requirements.txt (line 1))
+#9 2.616   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+#9 2.675 Collecting itsdangerous>=2.1.2 (from flask==3.0.3->-r requirements.txt (line 1))
+#9 2.719   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+#9 2.794 Collecting click>=8.1.3 (from flask==3.0.3->-r requirements.txt (line 1))
+#9 2.839   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#9 2.888 Collecting blinker>=1.6.2 (from flask==3.0.3->-r requirements.txt (line 1))
+#9 2.934   Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+#9 3.013 Collecting typing-extensions>=4.6 (from psycopg==3.2.3->psycopg[binary]==3.2.3->-r requirements.txt (line 2))
+#9 3.061   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#9 3.131 Collecting packaging (from gunicorn==23.0.0->-r requirements.txt (line 3))
+#9 3.183   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+#9 3.540 Collecting psycopg-binary==3.2.3 (from psycopg[binary]==3.2.3->-r requirements.txt (line 2))
+#9 3.596   Downloading psycopg_binary-3.2.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.8 kB)
+#9 3.720 Collecting MarkupSafe>=2.0 (from Jinja2>=3.1.2->flask==3.0.3->-r requirements.txt (line 1))
+#9 3.777   Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+#9 3.906 Downloading flask-3.0.3-py3-none-any.whl (101 kB)
+#9 4.079 Downloading psycopg-3.2.3-py3-none-any.whl (197 kB)
+#9 4.207 Downloading gunicorn-23.0.0-py3-none-any.whl (85 kB)
+#9 4.295 Downloading psycopg_binary-3.2.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.2 MB)
+#9 6.627    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.2/4.2 MB 1.7 MB/s eta 0:00:00
+#9 6.673 Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+#9 6.736 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#9 6.851 Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+#9 6.903 Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+#9 6.998 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#9 7.052 Downloading werkzeug-3.1.9-py3-none-any.whl (228 kB)
+#9 7.198 Downloading packaging-26.3-py3-none-any.whl (129 kB)
+#9 7.304 Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+#9 7.342 Installing collected packages: typing-extensions, psycopg-binary, packaging, MarkupSafe, itsdangerous, click, blinker, Werkzeug, psycopg, Jinja2, gunicorn, flask
+#9 8.307 Successfully installed Jinja2-3.1.6 MarkupSafe-3.0.4 Werkzeug-3.1.9 blinker-1.9.0 click-8.5.0 flask-3.0.3 gunicorn-23.0.0 itsdangerous-2.2.0 packaging-26.3 psycopg-3.2.3 psycopg-binary-3.2.3 typing-extensions-4.16.0
+#9 8.307 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#9 DONE 8.6s
+
+#10 [6/6] COPY app.py .
+#10 DONE 0.1s
+
+#11 exporting to image
+#11 exporting layers
+#11 exporting layers 1.4s done
+#11 exporting manifest sha256:d2251a53067a15e6793e44e6219421836f42d5d4d666855f3236e439ced2c784 0.1s done
+#11 exporting config sha256:437098387f2e498cfbbf349809fa8524044a927d83c54bfb4c12f085c72efaf9 0.1s done
+#11 exporting attestation manifest sha256:fe53f5cbb6cfd56f7ec49fdd08f4d7d03048f412a44103aa60781b2190e820ea
+#11 exporting attestation manifest sha256:fe53f5cbb6cfd56f7ec49fdd08f4d7d03048f412a44103aa60781b2190e820ea 0.2s done
+#11 exporting manifest list sha256:9ae1065050033d540b46360f97cdb85f5e08cb4bfc6e496ac2e8396be1585978
+#11 exporting manifest list sha256:9ae1065050033d540b46360f97cdb85f5e08cb4bfc6e496ac2e8396be1585978 0.1s done
+#11 naming to docker.io/library/achados-perdidos-exp-cache:latest done
+#11 unpacking to docker.io/library/achados-perdidos-exp-cache:latest
+#11 unpacking to docker.io/library/achados-perdidos-exp-cache:latest 0.4s done
+#11 DONE 2.3s
+
+# 2) Conteúdo idêntico: todas as etapas vêm do cache.
+
+$ docker build --progress=plain -t achados-perdidos-exp-cache <tmp>\contexto-2
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.39kB 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 0.1s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 360B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 63B done
+#4 DONE 0.1s
+
+#5 [1/6] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 0.1s done
+#5 DONE 0.1s
+
+#6 [2/6] WORKDIR /app
+#6 CACHED
+
+#7 [3/6] RUN groupadd --system --gid 10001 appuser  && useradd --system --uid 10001 --gid appuser --no-create-home --shell /usr/sbin/nologin appuser  && mkdir -p /app/uploads  && chown appuser:appuser /app/uploads
+#7 CACHED
+
+#8 [4/6] COPY requirements.txt .
+#8 CACHED
+
+#9 [5/6] RUN pip install --no-cache-dir -r requirements.txt
+#9 CACHED
+
+#10 [6/6] COPY app.py .
+#10 CACHED
+
+#11 exporting to image
+#11 exporting layers done
+#11 exporting manifest sha256:d2251a53067a15e6793e44e6219421836f42d5d4d666855f3236e439ced2c784 done
+#11 exporting config sha256:437098387f2e498cfbbf349809fa8524044a927d83c54bfb4c12f085c72efaf9 0.0s done
+#11 exporting attestation manifest sha256:08ff140a64818bacda0c493505f4ff7bcb36e4ef46e22f76da9658c787bc0b1e
+#11 exporting attestation manifest sha256:08ff140a64818bacda0c493505f4ff7bcb36e4ef46e22f76da9658c787bc0b1e 0.1s done
+#11 exporting manifest list sha256:55aafa1e70855889d7d15bd46c73de615e06a6baa40a6addb66c94f00bc5dd8c
+#11 exporting manifest list sha256:55aafa1e70855889d7d15bd46c73de615e06a6baa40a6addb66c94f00bc5dd8c 0.0s done
+#11 naming to docker.io/library/achados-perdidos-exp-cache:latest 0.0s done
+#11 unpacking to docker.io/library/achados-perdidos-exp-cache:latest 0.0s done
+#11 DONE 0.3s
+
+# 3) Só o app.py mudou (um comentário acrescentado na CÓPIA): o pip install continua em cache e só a cópia do código é refeita.
+
+$ docker build --progress=plain -t achados-perdidos-exp-cache <tmp>\contexto-3
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.39kB 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 0.1s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 360B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 2.45kB 0.0s done
+#4 DONE 0.1s
+
+#5 [1/6] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 0.1s done
+#5 DONE 0.1s
+
+#6 [2/6] WORKDIR /app
+#6 CACHED
+
+#7 [3/6] RUN groupadd --system --gid 10001 appuser  && useradd --system --uid 10001 --gid appuser --no-create-home --shell /usr/sbin/nologin appuser  && mkdir -p /app/uploads  && chown appuser:appuser /app/uploads
+#7 CACHED
+
+#8 [4/6] COPY requirements.txt .
+#8 CACHED
+
+#9 [5/6] RUN pip install --no-cache-dir -r requirements.txt
+#9 CACHED
+
+#10 [6/6] COPY app.py .
+#10 DONE 0.5s
+
+#11 exporting to image
+#11 exporting layers
+#11 exporting layers 0.2s done
+#11 exporting manifest sha256:af006d87c90dd03b1cef6fa44c12083c6a75beb127612a6fd1b10e853ba715c7 0.1s done
+#11 exporting config sha256:e8b029b0b5da61982464caa14a67ebe0d9ad6e3e8f95d589c6ead4801cfb020e
+#11 exporting config sha256:e8b029b0b5da61982464caa14a67ebe0d9ad6e3e8f95d589c6ead4801cfb020e 0.1s done
+#11 exporting attestation manifest sha256:4f48fcc5f8cbd9593fecbedda385b6d3e7b7d0edbf547840fdff3d4e64147d2e
+#11 exporting attestation manifest sha256:4f48fcc5f8cbd9593fecbedda385b6d3e7b7d0edbf547840fdff3d4e64147d2e 0.1s done
+#11 exporting manifest list sha256:e86ff8c6c39ff9c411cf30531200de45df7161321b489e29d1af75fb382f3b48
+#11 exporting manifest list sha256:e86ff8c6c39ff9c411cf30531200de45df7161321b489e29d1af75fb382f3b48 0.1s done
+#11 naming to docker.io/library/achados-perdidos-exp-cache:latest done
+#11 unpacking to docker.io/library/achados-perdidos-exp-cache:latest 0.1s done
+#11 DONE 0.9s
+
+# 4) O requirements.txt mudou (um comentário acrescentado na CÓPIA): a camada do pip install é invalidada e as dependências são reinstaladas.
+
+$ docker build --progress=plain -t achados-perdidos-exp-cache <tmp>\contexto-4
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.39kB 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 0.1s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 360B done
+#3 DONE 0.1s
+
+#4 [internal] load build context
+#4 transferring context: 156B 0.0s done
+#4 DONE 0.1s
+
+#5 [1/6] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 0.1s done
+#5 DONE 0.1s
+
+#6 [2/6] WORKDIR /app
+#6 CACHED
+
+#7 [3/6] RUN groupadd --system --gid 10001 appuser  && useradd --system --uid 10001 --gid appuser --no-create-home --shell /usr/sbin/nologin appuser  && mkdir -p /app/uploads  && chown appuser:appuser /app/uploads
+#7 CACHED
+
+#8 [4/6] COPY requirements.txt .
+#8 DONE 0.1s
+
+#9 [5/6] RUN pip install --no-cache-dir -r requirements.txt
+#9 2.497 Collecting flask==3.0.3 (from -r requirements.txt (line 1))
+#9 2.681   Downloading flask-3.0.3-py3-none-any.whl.metadata (3.2 kB)
+#9 2.745 Collecting psycopg==3.2.3 (from psycopg[binary]==3.2.3->-r requirements.txt (line 2))
+#9 2.791   Downloading psycopg-3.2.3-py3-none-any.whl.metadata (4.3 kB)
+#9 2.864 Collecting gunicorn==23.0.0 (from -r requirements.txt (line 3))
+#9 2.941   Downloading gunicorn-23.0.0-py3-none-any.whl.metadata (4.4 kB)
+#9 3.020 Collecting Werkzeug>=3.0.0 (from flask==3.0.3->-r requirements.txt (line 1))
+#9 3.074   Downloading werkzeug-3.1.9-py3-none-any.whl.metadata (4.1 kB)
+#9 3.133 Collecting Jinja2>=3.1.2 (from flask==3.0.3->-r requirements.txt (line 1))
+#9 3.179   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+#9 3.232 Collecting itsdangerous>=2.1.2 (from flask==3.0.3->-r requirements.txt (line 1))
+#9 3.278   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+#9 3.343 Collecting click>=8.1.3 (from flask==3.0.3->-r requirements.txt (line 1))
+#9 3.404   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#9 3.461 Collecting blinker>=1.6.2 (from flask==3.0.3->-r requirements.txt (line 1))
+#9 3.510   Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+#9 3.585 Collecting typing-extensions>=4.6 (from psycopg==3.2.3->psycopg[binary]==3.2.3->-r requirements.txt (line 2))
+#9 3.628   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#9 3.728 Collecting packaging (from gunicorn==23.0.0->-r requirements.txt (line 3))
+#9 3.787   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+#9 4.170 Collecting psycopg-binary==3.2.3 (from psycopg[binary]==3.2.3->-r requirements.txt (line 2))
+#9 4.227   Downloading psycopg_binary-3.2.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.8 kB)
+#9 4.365 Collecting MarkupSafe>=2.0 (from Jinja2>=3.1.2->flask==3.0.3->-r requirements.txt (line 1))
+#9 4.415   Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+#9 4.474 Downloading flask-3.0.3-py3-none-any.whl (101 kB)
+#9 4.599 Downloading psycopg-3.2.3-py3-none-any.whl (197 kB)
+#9 4.735 Downloading gunicorn-23.0.0-py3-none-any.whl (85 kB)
+#9 4.833 Downloading psycopg_binary-3.2.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.2 MB)
+#9 6.393    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.2/4.2 MB 2.7 MB/s eta 0:00:00
+#9 6.447 Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+#9 6.536 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#9 6.634 Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+#9 6.699 Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+#9 6.797 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#9 6.884 Downloading werkzeug-3.1.9-py3-none-any.whl (228 kB)
+#9 7.053 Downloading packaging-26.3-py3-none-any.whl (129 kB)
+#9 7.184 Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+#9 7.221 Installing collected packages: typing-extensions, psycopg-binary, packaging, MarkupSafe, itsdangerous, click, blinker, Werkzeug, psycopg, Jinja2, gunicorn, flask
+#9 8.210 Successfully installed Jinja2-3.1.6 MarkupSafe-3.0.4 Werkzeug-3.1.9 blinker-1.9.0 click-8.5.0 flask-3.0.3 gunicorn-23.0.0 itsdangerous-2.2.0 packaging-26.3 psycopg-3.2.3 psycopg-binary-3.2.3 typing-extensions-4.16.0
+#9 8.210 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#9 DONE 8.6s
+
+#10 [6/6] COPY app.py .
+#10 DONE 0.2s
+
+#11 exporting to image
+#11 exporting layers
+#11 exporting layers 1.3s done
+#11 exporting manifest sha256:9a99335f084cbbaeb7a6f2d1ed833e448654dd25b51fbcd4fd66d53b04f1b121 0.1s done
+#11 exporting config sha256:afa178bc36ed1f00fa6f652d454d1eb3e9b1209037a17f820f26a478b11e9d0c 0.0s done
+#11 exporting attestation manifest sha256:3fbd555ce3f15ced2e0fb32324890b8cce170c39d66e76773bea40e5b4b7840a 0.1s done
+#11 exporting manifest list sha256:4544a4e8491efb822ce5ca3d4c479e52f3f88325b00c540cb74a642554aef09e
+#11 exporting manifest list sha256:4544a4e8491efb822ce5ca3d4c479e52f3f88325b00c540cb74a642554aef09e 0.0s done
+#11 naming to docker.io/library/achados-perdidos-exp-cache:latest 0.0s done
+#11 unpacking to docker.io/library/achados-perdidos-exp-cache:latest
+#11 unpacking to docker.io/library/achados-perdidos-exp-cache:latest 0.4s done
+#11 DONE 2.1s
+
+# Tempos medidos (segundos): do zero=13.1 | sem mudanças=1.5 | só app.py=2.5 | requirements.txt=11.8

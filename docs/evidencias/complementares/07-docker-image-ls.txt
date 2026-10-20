@@ -1,0 +1,26 @@
+# Legenda: docker image ls: tamanho da imagem do web (base python:3.12-slim + dependências) comparado às imagens oficiais usadas.
+# Gerado em: 2026-10-19T23:18:06-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ docker image ls achados-perdidos-evidencias-web
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+IMAGE                                    ID             DISK USAGE   CONTENT SIZE   EXTRA
+achados-perdidos-evidencias-web:latest   59d677bacee9        206MB         50.4MB   U
+
+$ docker image ls python:3.12-slim
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+IMAGE              ID             DISK USAGE   CONTENT SIZE   EXTRA
+python:3.12-slim   a6e34c598f24        179MB         45.4MB
+
+$ docker image ls postgres:16-alpine
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+IMAGE                ID             DISK USAGE   CONTENT SIZE   EXTRA
+postgres:16-alpine   16bc17c64a57        396MB          111MB   U
+
+$ docker image ls nginx:1.30-alpine
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+IMAGE               ID             DISK USAGE   CONTENT SIZE   EXTRA
+nginx:1.30-alpine   970364228b1e        102MB         29.4MB   U
+
+$ docker image inspect achados-perdidos-evidencias-web --format {{.Size}}
+50371871

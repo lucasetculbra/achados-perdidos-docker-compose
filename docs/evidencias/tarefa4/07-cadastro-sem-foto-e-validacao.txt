@@ -1,0 +1,13 @@
+# Legenda: POST /itens sem foto devolve 201 com foto=null; sem o campo obrigatório 'local' devolve 400 (RF03).
+# Gerado em: 2026-10-19T23:18:01-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Chave de armario" -F local=Cantina http://localhost:18080/itens
+{"foto":null,"id":5}
+
+HTTP 201
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=so descricao" http://localhost:18080/itens
+{"erro":"campos 'descricao' e 'local' sao obrigatorios"}
+
+HTTP 400

@@ -1,0 +1,8 @@
+# Legenda: GET /itens lista os três objetos de exemplo criados pelo init.sql na primeira execução (RF02).
+# Gerado em: 2026-10-19T23:18:00-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens
+[{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"}]
+
+HTTP 200

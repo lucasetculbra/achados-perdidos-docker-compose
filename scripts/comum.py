@@ -268,6 +268,8 @@ class Ambiente:
         texto = ANSI.sub("", texto).replace("\r\n", "\n").replace("\r", "\n")
         for segredo in self.segredos:
             texto = texto.replace(segredo, "********")
+        # valores de cookies de sessão (ex.: adminer_key) são aleatórios e não devem ir para as evidências
+        texto = re.sub(r"(?im)^(set-cookie:[ \t]*[^=\s]+=)[^;\s]*", r"\1********", texto)
         home = str(Path.home())
         # caminhos: os mais específicos primeiro; no Windows a caixa das letras varia (c:\ x C:\)
         for origem, destino in ((str(self.tmp), "<tmp>"), (str(RAIZ), "<repo>"), (home, "~")):

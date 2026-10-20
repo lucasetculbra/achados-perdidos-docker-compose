@@ -1,0 +1,18 @@
+# Legenda: Só o nginx publica porta no host; o PostgreSQL (5432) e o web (5000) existem apenas na rede interna.
+# Gerado em: 2026-10-19T23:18:04-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ docker compose ps --format "table {{.Service}}\t{{.Ports}}"
+SERVICE   PORTS
+db        5432/tcp
+nginx     0.0.0.0:18080->80/tcp, [::]:18080->80/tcp
+web       5000/tcp
+
+$ docker inspect achados-perdidos-evidencias-db-1 --format "db: {{json .NetworkSettings.Ports}}"
+db: {"5432/tcp":null}
+
+$ docker inspect achados-perdidos-evidencias-web-1 --format "web: {{json .NetworkSettings.Ports}}"
+web: {"5000/tcp":null}
+
+$ docker inspect achados-perdidos-evidencias-nginx-1 --format "nginx: {{json .NetworkSettings.Ports}}"
+nginx: {"80/tcp":[{"HostIp":"0.0.0.0","HostPort":"18080"},{"HostIp":"::","HostPort":"18080"}]}

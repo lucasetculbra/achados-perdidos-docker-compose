@@ -90,18 +90,21 @@ def segredos() -> None:
     if env:
         checar("T3", ".env.example tem as mesmas chaves do .env", set(exemplo) == set(env), f"exemplo={sorted(exemplo)} env={sorted(env)}")
         senha = env.get("POSTGRES_PASSWORD", "")
-        checar("RNF03", ".env.example não repete a senha real do .env", senha != exemplo.get("POSTGRES_PASSWORD"))
-        vazou = []
-        if len(senha) >= 8:
-            for rel in arquivos:
-                caminho = RAIZ / rel
-                if caminho.is_file() and caminho.stat().st_size < 5_000_000:
-                    try:
-                        if senha in caminho.read_text(encoding="utf-8", errors="ignore"):
-                            vazou.append(rel)
-                    except OSError:
-                        pass
-        checar("RNF03", "a senha real do .env não aparece em nenhum arquivo do projeto (fora o .env)", not vazou, ", ".join(vazou))
+        if senha == exemplo.get("POSTGRES_PASSWORD"):
+            print("  (o .env é uma cópia do .env.example, como logo depois de clonar: não há senha real para procurar nos arquivos)")
+        else:
+            checar("RNF03", ".env.example não repete a senha real do .env", True)
+            vazou = []
+            if len(senha) >= 8:
+                for rel in arquivos:
+                    caminho = RAIZ / rel
+                    if caminho.is_file() and caminho.stat().st_size < 5_000_000:
+                        try:
+                            if senha in caminho.read_text(encoding="utf-8", errors="ignore"):
+                                vazou.append(rel)
+                        except OSError:
+                            pass
+            checar("RNF03", "a senha real do .env não aparece em nenhum arquivo do projeto (fora o .env)", not vazou, ", ".join(vazou))
     else:
         print("  (sem .env local: comparações com a senha real foram puladas)")
 
@@ -202,12 +205,17 @@ def evidencias_e_docs(final: bool) -> None:
         resumo = (pasta / "resumo-testes.md").read_text(encoding="utf-8") if (pasta / "resumo-testes.md").exists() else ""
         checar("A4", "resumo-testes.md sem nenhuma verificação reprovada", bool(resumo) and "FALHOU" not in resumo)
         senha = ler_env().get("POSTGRES_PASSWORD", "")
-        if len(senha) >= 8:
+        if senha and senha != next((l.split("=", 1)[1].strip() for l in ler(".env.example").splitlines() if l.startswith("POSTGRES_PASSWORD=")), None) and len(senha) >= 8:
             checar("RNF03", "evidências não contêm a senha do .env", not any(senha in t.read_text(encoding="utf-8", errors="ignore") for t in pasta.rglob("*") if t.is_file() and t.suffix in {".txt", ".md"}))
 
     if final:
         faltam = [rel for rel in DOCS_OBRIGATORIOS if not (RAIZ / rel).exists()]
         checar("A1-A5", "README, docs/ (index, arquitetura, RELATORIO, REFLEXAO), mkdocs.yml e requirements-docs.txt existem", not faltam, ", ".join(faltam))
+        if (RAIZ / "docs/RELATORIO.md").exists():
+            relatorio = ler("docs/RELATORIO.md").replace("\r\n", "\n")
+            checar("A3", "o Dockerfile transcrito em docs/RELATORIO.md é idêntico a app/Dockerfile", ler("app/Dockerfile").replace("\r\n", "\n").rstrip() in relatorio)
+            partes = ["## A. Dockerfile", "## B. `docker-compose.yml`", "## C. O caminho de um `POST /itens` com foto", "## D. Ciclo de vida dos volumes"]
+            checar("A3", "o relatório tem as quatro partes (A) a (D)", all(p in relatorio for p in partes), str([p for p in partes if p not in relatorio]))
         if (RAIZ / "docs/REFLEXAO.md").exists():
             reflexao = ler("docs/REFLEXAO.md")
             blocos = re.split(r"(?m)^##\s+(Q[1-7])\b.*$", reflexao)

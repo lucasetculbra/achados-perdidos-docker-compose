@@ -1,0 +1,110 @@
+# Legenda: Com o volume dados_banco já populado, um init.sql alterado NÃO é reaplicado (initdb é ignorado); a coluna nova só entra com ALTER TABLE, sem perder dados.
+# Gerado em: 2026-10-19T22:56:45-03:00 | Projeto Compose: achados-perdidos-experimentos
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+# PASSO 1 - registrar um item novo (prova de que os dados não se perdem) e o número de linhas
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Item cadastrado antes da alteracao" -F local=Q3 http://localhost:18080/itens
+{"foto":null,"id":4}
+
+HTTP 201
+
+$ docker compose exec -T db sh -c "psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" -c \"SELECT count(*) AS itens FROM itens\""
+ itens 
+-------
+     4
+(1 row)
+
+# PASSO 2 - trocar o init.sql montado por uma versão com a coluna 'contato' (override temporário; o db/init.sql do repositório não é alterado)
+
+# Conteúdo do override:
+# services:
+#   db:
+#     volumes: !override
+#       - type: volume
+#         source: dados_banco
+#         target: /var/lib/postgresql/data
+#       - type: bind
+#         source: '<tmp>\init-alterado.sql'
+#         target: /docker-entrypoint-initdb.d/init.sql
+#         read_only: true
+
+$ docker compose up -d
+ Container achados-perdidos-experimentos-db-1 Recreate 
+ Container achados-perdidos-experimentos-db-1 Recreated 
+ Container achados-perdidos-experimentos-web-1 Running 
+ Container achados-perdidos-experimentos-nginx-1 Running 
+ Container achados-perdidos-experimentos-db-1 Starting 
+ Container achados-perdidos-experimentos-db-1 Started 
+ Container achados-perdidos-experimentos-db-1 Waiting 
+ Container achados-perdidos-experimentos-db-1 Healthy 
+ Container achados-perdidos-experimentos-web-1 Waiting 
+ Container achados-perdidos-experimentos-web-1 Healthy
+
+# PASSO 3 - o db foi recriado com o novo init.sql montado. A coluna existe?
+
+$ docker compose logs db --tail 30
+db-1  | 
+db-1  | PostgreSQL Database directory appears to contain a database; Skipping initialization
+db-1  | 
+db-1  | 2026-10-20 01:56:30.659 UTC [1] LOG:  starting PostgreSQL 16.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+db-1  | 2026-10-20 01:56:30.659 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+db-1  | 2026-10-20 01:56:30.659 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+db-1  | 2026-10-20 01:56:30.677 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db-1  | 2026-10-20 01:56:30.696 UTC [29] LOG:  database system was shut down at 2026-10-20 01:56:29 UTC
+db-1  | 2026-10-20 01:56:30.707 UTC [1] LOG:  database system is ready to accept connections
+
+$ docker compose exec -T db sh -c "psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" -c \"\d itens\""
+                                        Table "public.itens"
+  Column   |            Type             | Collation | Nullable |              Default              
+-----------+-----------------------------+-----------+----------+-----------------------------------
+ id        | integer                     |           | not null | nextval('itens_id_seq'::regclass)
+ descricao | character varying(200)      |           | not null | 
+ local     | character varying(100)      |           | not null | 
+ foto      | character varying(100)      |           |          | 
+ criado_em | timestamp without time zone |           | not null | now()
+Indexes:
+    "itens_pkey" PRIMARY KEY, btree (id)
+
+# PASSO 4 - aplicar a mudança SEM perder dados: ALTER TABLE direto no banco em execução (migração)
+
+$ docker compose exec -T db sh -c "psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" -c \"ALTER TABLE itens ADD COLUMN IF NOT EXISTS contato VARCHAR(100)\""
+ALTER TABLE
+
+$ docker compose exec -T db sh -c "psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" -c \"\d itens\""
+                                        Table "public.itens"
+  Column   |            Type             | Collation | Nullable |              Default              
+-----------+-----------------------------+-----------+----------+-----------------------------------
+ id        | integer                     |           | not null | nextval('itens_id_seq'::regclass)
+ descricao | character varying(200)      |           | not null | 
+ local     | character varying(100)      |           | not null | 
+ foto      | character varying(100)      |           |          | 
+ criado_em | timestamp without time zone |           | not null | now()
+ contato   | character varying(100)      |           |          | 
+Indexes:
+    "itens_pkey" PRIMARY KEY, btree (id)
+
+$ docker compose exec -T db sh -c "psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" -c \"SELECT count(*) AS itens FROM itens\""
+ itens 
+-------
+     4
+(1 row)
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens
+[{"criado_em":"2026-10-20T01:56:28.795069","descricao":"Item cadastrado antes da alteracao","foto":null,"id":4,"local":"Q3"},{"criado_em":"2026-10-20T01:56:12.477214","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"},{"criado_em":"2026-10-20T01:56:12.477214","descricao":"Carregador de notebook USB-C","foto":null,"id":2,"local":"Laboratorio 3"},{"criado_em":"2026-10-20T01:56:12.477214","descricao":"Casaco preto com capuz","foto":null,"id":3,"local":"Cantina"}]
+
+HTTP 200
+
+# PASSO 5 - voltar ao init.sql original do repositório
+
+$ docker compose up -d
+ Container achados-perdidos-experimentos-db-1 Recreate 
+ Container achados-perdidos-experimentos-db-1 Recreated 
+ Container achados-perdidos-experimentos-web-1 Running 
+ Container achados-perdidos-experimentos-nginx-1 Running 
+ Container achados-perdidos-experimentos-db-1 Starting 
+ Container achados-perdidos-experimentos-db-1 Started 
+ Container achados-perdidos-experimentos-db-1 Waiting 
+ Container achados-perdidos-experimentos-db-1 Healthy 
+ Container achados-perdidos-experimentos-web-1 Waiting 
+ Container achados-perdidos-experimentos-web-1 Healthy

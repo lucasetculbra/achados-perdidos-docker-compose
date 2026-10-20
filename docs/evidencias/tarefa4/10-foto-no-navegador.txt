@@ -1,0 +1,8 @@
+# Legenda: A URL da foto retornada em GET /itens aberta no navegador (roteiro da Tarefa 4).
+# Gerado em: 2026-10-19T23:18:03-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --headless=new --disable-gpu --no-first-run --hide-scrollbars --user-data-dir=<tmp>\perfil-navegador-0 --window-size=640,480 --screenshot=<repo>\docs\evidencias\tarefa4\10-foto-no-navegador.png http://localhost:18080/fotos/70097a47e5e74a519f7ed247353cf0ad.png
+4478 bytes written to file <repo>\docs\evidencias\tarefa4\10-foto-no-navegador.png
+
+# Captura salva em 10-foto-no-navegador.png (4478 bytes).

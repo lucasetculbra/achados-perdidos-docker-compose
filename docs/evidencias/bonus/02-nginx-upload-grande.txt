@@ -1,0 +1,24 @@
+# Legenda: Foto de ~2 MB passa pelo proxy (client_max_body_size 10m); arquivo de ~11 MB é recusado com 413.
+# Gerado em: 2026-10-19T23:19:03-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Foto grande" -F local=Teste -F foto=@foto-2mb.png http://localhost:18080/itens
+{"foto":"93bd220d143d4550b952da2b791a7560.png","id":4}
+
+HTTP 201
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=foto enorme" -F local=Teste -F foto=@foto-11mb.png http://localhost:18080/itens
+<html>
+<head><title>413 Request Entity Too Large</title></head>
+<body>
+<center><h1>413 Request Entity Too Large</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+HTTP 413
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas
+{"fotos_no_volume":1,"itens_no_banco":4}
+
+HTTP 200

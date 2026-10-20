@@ -1,0 +1,89 @@
+# Legenda: docker compose up -d --build constrói a imagem do web e sobe db, web e nginx com um único comando (RNF01), na ordem db -> web -> nginx (RNF05).
+# Gerado em: 2026-10-19T23:18:00-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ docker compose config --quiet
+
+
+$ docker compose up -d --build
+ Image achados-perdidos-evidencias-web Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 627B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.39kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 0.2s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 360B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 2.48kB done
+#5 DONE 0.0s
+
+#6 [1/6] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#6 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#6 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 0.1s done
+#6 DONE 0.1s
+
+#7 [2/6] WORKDIR /app
+#7 CACHED
+
+#8 [3/6] RUN groupadd --system --gid 10001 appuser  && useradd --system --uid 10001 --gid appuser --no-create-home --shell /usr/sbin/nologin appuser  && mkdir -p /app/uploads  && chown appuser:appuser /app/uploads
+#8 CACHED
+
+#9 [4/6] COPY requirements.txt .
+#9 CACHED
+
+#10 [5/6] RUN pip install --no-cache-dir -r requirements.txt
+#10 CACHED
+
+#11 [6/6] COPY app.py .
+#11 CACHED
+
+#12 exporting to image
+#12 exporting layers done
+#12 exporting manifest sha256:42451b9c12f571c85cda1c17f1ca29011d04317be59ce2e636dc1d12d12f22c3 0.1s done
+#12 exporting config sha256:a9a70a39f636f2155c46f76f7ecfa72c04574d7354a238d2944188c7a7608a49
+#12 exporting config sha256:a9a70a39f636f2155c46f76f7ecfa72c04574d7354a238d2944188c7a7608a49 0.1s done
+#12 exporting attestation manifest sha256:bbde42e23be30ac367a7007ea3e643c761085df816d33106b9d4261e0bb3fae0
+#12 exporting attestation manifest sha256:bbde42e23be30ac367a7007ea3e643c761085df816d33106b9d4261e0bb3fae0 0.1s done
+#12 exporting manifest list sha256:59d677bacee942c156801b4db5d060eb4cdb799629bfd7b29dfbbf8def07a097
+#12 exporting manifest list sha256:59d677bacee942c156801b4db5d060eb4cdb799629bfd7b29dfbbf8def07a097 0.1s done
+#12 naming to docker.io/library/achados-perdidos-evidencias-web:latest done
+#12 unpacking to docker.io/library/achados-perdidos-evidencias-web:latest
+#12 unpacking to docker.io/library/achados-perdidos-evidencias-web:latest 0.6s done
+#12 DONE 1.0s
+
+#13 resolving provenance for metadata file
+#13 DONE 0.0s
+ Image achados-perdidos-evidencias-web Built 
+ Network achados-perdidos-evidencias_rede_interna Creating 
+ Network achados-perdidos-evidencias_rede_interna Created 
+ Volume achados-perdidos-evidencias_fotos Creating 
+ Volume achados-perdidos-evidencias_fotos Created 
+ Volume achados-perdidos-evidencias_dados_banco Creating 
+ Volume achados-perdidos-evidencias_dados_banco Created 
+ Container achados-perdidos-evidencias-db-1 Creating 
+ Container achados-perdidos-evidencias-db-1 Created 
+ Container achados-perdidos-evidencias-web-1 Creating 
+ Container achados-perdidos-evidencias-web-1 Created 
+ Container achados-perdidos-evidencias-nginx-1 Creating 
+ Container achados-perdidos-evidencias-nginx-1 Created 
+ Container achados-perdidos-evidencias-db-1 Starting 
+ Container achados-perdidos-evidencias-db-1 Started 
+ Container achados-perdidos-evidencias-db-1 Waiting 
+ Container achados-perdidos-evidencias-db-1 Healthy 
+ Container achados-perdidos-evidencias-web-1 Starting 
+ Container achados-perdidos-evidencias-web-1 Started 
+ Container achados-perdidos-evidencias-web-1 Waiting 
+ Container achados-perdidos-evidencias-web-1 Healthy 
+ Container achados-perdidos-evidencias-nginx-1 Starting 
+ Container achados-perdidos-evidencias-nginx-1 Started
+
+# Serviços healthy e GET /health = 200 após 7s.

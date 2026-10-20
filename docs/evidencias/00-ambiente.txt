@@ -1,0 +1,26 @@
+# Legenda: Contexto da execução dos testes: versões, projeto Compose isolado, portas e SHA-256 dos arquivos testados.
+
+Projeto Compose isolado: achados-perdidos-evidencias
+Porta do host (nginx): 18080   |   Porta do Adminer (127.0.0.1): 8081
+Executado no GitHub Actions: não (computador do autor)
+Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+Data: 2026-10-19T23:17:36-03:00
+Sistema: Windows-11-10.0.26200-SP0
+Python (scripts): 3.13.14
+Git: git version 2.53.0.windows.2
+Docker: cliente 29.4.3 / servidor 29.4.3
+Docker Compose: 5.1.3
+Commit (HEAD): 236954b
+Arquivos de infraestrutura modificados em relação ao HEAD: nenhum
+
+SHA-256 dos arquivos de infraestrutura (fim de linha normalizado para LF):
+  b1a3e36196e7d756a61d920a24ca0a01012831a31e7bfed77c58f3dbf6ea1d23  app/Dockerfile
+  7a456ba02797f4812142e29f5ae4fd12ef41b27d29f93273f372cb1a14a1b88f  app/.dockerignore
+  36532ce006c30e044a268ecc01094b3a4be80df06f1685a74cc7408cf3a6bca4  app/app.py
+  b77dbdd309050c6a32108b5922a01efbbbe03177b33781178e4f539fe8bc2184  app/requirements.txt
+  d9e8ba872f684483bd8347fd9686a45eeaca2635ccaf7ba51ead8e381a0f4639  db/init.sql
+  f457d169141e742627c2f51dea73d52ea00150a767252cf78330829c66c1f1e4  docker-compose.yml
+  880aa60e1b97f0eaf5e8094bbd6f5e722759eab94707bd75db41e8b1243104ed  nginx/default.conf
+  355c49e33b516c97985cdbdc583a6a5e930bb9c419d9333053ac3106a41984d6  .env.example
+  5e054dd899dd7af820aaea74a55d6abdfb520f8116e49b8c2a836317ee87a611  scripts/backup_fotos.py

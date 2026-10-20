@@ -315,10 +315,12 @@ def complementares(amb: Ambiente) -> None:
         amb.checar("SEG", "o web consegue gravar em /app/uploads (volume fotos)", b.ok)
         amb.checar("T3", "o bind mount do init.sql é somente leitura", d.codigo != 0 and "Read-only" in d.saida, d.saida.strip()[:100])
 
-        with amb.evidencia("complementares/05-sem-segredos-na-imagem.txt", "A imagem do web não contém senhas: as credenciais só chegam em tempo de execução, vindas do .env (RNF03).") as ev:
-            e = ev.cmd(["docker", "image", "inspect", f"{p}-web", "--format", "{{json .Config.Env}}"])
+        with amb.evidencia("complementares/05-sem-segredos-na-imagem.txt", "A imagem do web não contém senhas: nenhuma variável embutida é de banco e o .env não está em /app; as credenciais só chegam em tempo de execução (RNF03).") as ev:
+            ev.nota("Nomes das variáveis de ambiente embutidas na IMAGEM do web (só os nomes; o teste automático também procurou o VALOR da senha em todas elas):")
+            nomes = ev.cmd(["docker", "image", "inspect", f"{p}-web", "--format", '{{range .Config.Env}}{{index (split . "=") 0}}{{println}}{{end}}'])
             ls = ev.cmd(amb.dc("exec", "-T", "web", "ls", "-la", "/app"))
-        amb.checar("RNF03", "variáveis embutidas na imagem do web não incluem senha", "********" not in e.saida and "PASSWORD" not in e.saida.upper(), "")
+        valores = amb.rodar(["docker", "image", "inspect", f"{p}-web", "--format", "{{json .Config.Env}}"], quieto=True)  # sem gravar: só para a verificação
+        amb.checar("RNF03", "variáveis embutidas na imagem do web não incluem senha (nomes e valores verificados)", "********" not in valores.saida and "PASSWORD" not in valores.saida.upper() and "PASSWORD" not in nomes.saida.upper())
         amb.checar("RNF03", "o arquivo .env não está dentro da imagem (/app)", ".env" not in ls.saida)
 
         with amb.evidencia("complementares/06-docker-network-inspect.txt", "docker network inspect da rede_interna: rede bridge definida pelo usuário com os contêineres db, web e nginx.") as ev:

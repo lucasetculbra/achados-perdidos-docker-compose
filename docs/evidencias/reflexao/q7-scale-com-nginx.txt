@@ -1,0 +1,73 @@
+# Legenda: Com o nginx na frente e sem porta fixa no web, --scale web=3 funciona: 3 réplicas respondem e compartilham o volume fotos (no mesmo host).
+# Gerado em: 2026-10-19T22:56:54-03:00 | Projeto Compose: achados-perdidos-experimentos
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ docker compose up -d --scale web=3
+ Container achados-perdidos-experimentos-db-1 Running 
+ Container achados-perdidos-experimentos-web-1 Running 
+ Container achados-perdidos-experimentos-web-3 Creating 
+ Container achados-perdidos-experimentos-web-2 Creating 
+ Container achados-perdidos-experimentos-web-2 Created 
+ Container achados-perdidos-experimentos-web-3 Created 
+ Container achados-perdidos-experimentos-nginx-1 Running 
+ Container achados-perdidos-experimentos-db-1 Waiting 
+ Container achados-perdidos-experimentos-db-1 Healthy 
+ Container achados-perdidos-experimentos-web-3 Starting 
+ Container achados-perdidos-experimentos-web-3 Started 
+ Container achados-perdidos-experimentos-web-2 Starting 
+ Container achados-perdidos-experimentos-web-2 Started 
+ Container achados-perdidos-experimentos-web-3 Waiting 
+ Container achados-perdidos-experimentos-web-2 Waiting 
+ Container achados-perdidos-experimentos-web-1 Waiting 
+ Container achados-perdidos-experimentos-web-3 Healthy 
+ Container achados-perdidos-experimentos-web-2 Healthy 
+ Container achados-perdidos-experimentos-web-1 Healthy
+
+$ docker compose ps
+NAME                                    IMAGE                               COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+achados-perdidos-experimentos-db-1      postgres:16-alpine                  "docker-entrypoint.s…"   db        15 seconds ago   Up 13 seconds (healthy)   5432/tcp
+achados-perdidos-experimentos-nginx-1   nginx:1.30-alpine                   "/docker-entrypoint.…"   nginx     44 seconds ago   Up 32 seconds (healthy)   0.0.0.0:18080->80/tcp, [::]:18080->80/tcp
+achados-perdidos-experimentos-web-1     achados-perdidos-experimentos-web   "gunicorn --bind 0.0…"   web       44 seconds ago   Up 37 seconds (healthy)   5000/tcp
+achados-perdidos-experimentos-web-2     achados-perdidos-experimentos-web   "gunicorn --bind 0.0…"   web       7 seconds ago    Up 6 seconds (healthy)    5000/tcp
+achados-perdidos-experimentos-web-3     achados-perdidos-experimentos-web   "gunicorn --bind 0.0…"   web       7 seconds ago    Up 6 seconds (healthy)    5000/tcp
+
+# Distribuição: 18 requisições GET /health feitas de dentro do nginx; o campo 'container' mostra qual réplica respondeu.
+# O nginx renova o DNS a cada 10 s (resolver ... valid=10s), então a primeira rodada pode usar poucas réplicas; repetimos até aparecerem as três.
+
+$ docker compose exec -T nginx sh -c "for i in $(seq 1 18); do wget -qO- http://127.0.0.1/health; done"
+{"banco":"conectado","container":"cb704507d44b","status":"ok"}
+{"banco":"conectado","container":"45c7986a38fb","status":"ok"}
+{"banco":"conectado","container":"cb704507d44b","status":"ok"}
+{"banco":"conectado","container":"45c7986a38fb","status":"ok"}
+{"banco":"conectado","container":"10d7e0250fb0","status":"ok"}
+{"banco":"conectado","container":"10d7e0250fb0","status":"ok"}
+{"banco":"conectado","container":"45c7986a38fb","status":"ok"}
+{"banco":"conectado","container":"10d7e0250fb0","status":"ok"}
+{"banco":"conectado","container":"cb704507d44b","status":"ok"}
+{"banco":"conectado","container":"45c7986a38fb","status":"ok"}
+{"banco":"conectado","container":"10d7e0250fb0","status":"ok"}
+{"banco":"conectado","container":"45c7986a38fb","status":"ok"}
+{"banco":"conectado","container":"cb704507d44b","status":"ok"}
+{"banco":"conectado","container":"10d7e0250fb0","status":"ok"}
+{"banco":"conectado","container":"45c7986a38fb","status":"ok"}
+{"banco":"conectado","container":"10d7e0250fb0","status":"ok"}
+{"banco":"conectado","container":"45c7986a38fb","status":"ok"}
+{"banco":"conectado","container":"cb704507d44b","status":"ok"}
+
+# Réplicas distintas que responderam na última rodada: 3
+
+# Volume compartilhado: cadastra uma foto pelo nginx e lista /app/uploads em CADA réplica (as três montam o mesmo volume 'fotos').
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Foto enviada com 3 replicas" -F local=Q7 -F foto=@pequena.png http://localhost:18080/itens
+{"foto":"bdc8723e427e476696f04e1421614356.png","id":5}
+
+HTTP 201
+
+$ docker compose exec -T --index 1 web ls /app/uploads
+bdc8723e427e476696f04e1421614356.png
+
+$ docker compose exec -T --index 2 web ls /app/uploads
+bdc8723e427e476696f04e1421614356.png
+
+$ docker compose exec -T --index 3 web ls /app/uploads
+bdc8723e427e476696f04e1421614356.png

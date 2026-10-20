@@ -1,0 +1,89 @@
+site_name: Achados & Perdidos — Docker Compose
+site_description: Documentação do ambiente em contêineres (Flask, PostgreSQL e Nginx) da Avaliação de Grau 1 de Computação em Nuvem.
+site_author: lucasetculbra
+site_url: https://lucasetculbra.github.io/achados-perdidos-docker-compose/
+repo_url: https://github.com/lucasetculbra/achados-perdidos-docker-compose
+repo_name: lucasetculbra/achados-perdidos-docker-compose
+edit_uri: edit/main/docs/
+copyright: Avaliação de Grau 1 · Computação em Nuvem · Prof. Fábio Castro
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  language: pt-BR
+  font: false # fontes do sistema: nenhuma requisição a servidores de fontes de terceiros
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: teal
+      toggle:
+        icon: material/weather-night
+        name: Mudar para o modo escuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: teal
+      toggle:
+        icon: material/weather-sunny
+        name: Mudar para o modo claro
+  features:
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+
+plugins:
+  - search:
+      lang: pt
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - callouts # alertas no estilo do GitHub: > [!NOTE], > [!WARNING]...
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: ["."] # inclui trechos do README.md (passo a passo e tabela de rotas) sem duplicar texto
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid # diagramas Mermaid renderizados no próprio site (não dependem do GitHub)
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+validation:
+  omitted_files: info
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+nav:
+  - Início: index.md
+  - Como executar: guia.md
+  - Arquitetura: arquitetura.md
+  - Relatório técnico: RELATORIO.md
+  - Reflexão e nuvem: REFLEXAO.md
+  - Bônus: bonus.md
+  - CI/CD e GitHub Pages: cicd.md
+  - Evidências: evidencias/README.md

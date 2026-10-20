@@ -1,0 +1,8 @@
+# Legenda: A mesma foto aberta no navegador DEPOIS do down + up: o arquivo sobreviveu no volume fotos.
+# Gerado em: 2026-10-19T23:18:32-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --headless=new --disable-gpu --no-first-run --hide-scrollbars --user-data-dir=<tmp>\perfil-navegador-1 --window-size=640,480 --screenshot=<repo>\docs\evidencias\tarefa5\04-foto-apos-recriacao.png http://localhost:18080/fotos/70097a47e5e74a519f7ed247353cf0ad.png
+4478 bytes written to file <repo>\docs\evidencias\tarefa5\04-foto-apos-recriacao.png
+
+# Captura salva em 04-foto-apos-recriacao.png (4478 bytes).

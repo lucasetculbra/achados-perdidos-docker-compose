@@ -1,0 +1,18 @@
+# Legenda: GET /itens?local=biblio filtra por local sem diferenciar maiúsculas de minúsculas (RF02).
+# Gerado em: 2026-10-19T23:18:01-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" "http://localhost:18080/itens?local=biblio"
+[{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"}]
+
+HTTP 200
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" "http://localhost:18080/itens?local=BIBLIO"
+[{"criado_em":"2026-10-20T02:17:43.919535","descricao":"Garrafa termica azul","foto":null,"id":1,"local":"Biblioteca"}]
+
+HTTP 200
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" "http://localhost:18080/itens?local=nao-existe"
+[]
+
+HTTP 200

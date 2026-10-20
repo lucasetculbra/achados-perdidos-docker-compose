@@ -1,0 +1,8 @@
+# Legenda: GET /health responde "status": "ok" e "banco": "conectado" (RF01).
+# Gerado em: 2026-10-19T23:18:00-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/health
+{"banco":"conectado","container":"cc1833ebc583","status":"ok"}
+
+HTTP 200

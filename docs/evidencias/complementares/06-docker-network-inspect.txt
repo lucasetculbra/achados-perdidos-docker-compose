@@ -1,0 +1,76 @@
+# Legenda: docker network inspect da rede_interna: rede bridge definida pelo usuário com os contêineres db, web e nginx.
+# Gerado em: 2026-10-19T23:18:06-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ docker network inspect achados-perdidos-evidencias_rede_interna
+[
+    {
+        "Name": "achados-perdidos-evidencias_rede_interna",
+        "Id": "2506554c33b93e64e44fa2fb1362193356afefbc709ff09969c44da106e2a0ef",
+        "Created": "2026-10-20T02:17:39.794559385Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.21.0.0/16",
+                    "Gateway": "172.21.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Options": {
+            "com.docker.network.enable_ipv4": "true",
+            "com.docker.network.enable_ipv6": "false"
+        },
+        "Labels": {
+            "com.docker.compose.config-hash": "50f5898c6b8524ab7b3fd7df2d5fa9a90fb30ad186a8736676ce2876068b15e6",
+            "com.docker.compose.network": "rede_interna",
+            "com.docker.compose.project": "achados-perdidos-evidencias",
+            "com.docker.compose.version": "5.1.3"
+        },
+        "Containers": {
+            "8a2a7acc25d3ed206f8fba09845fc4cd4f98995ca314a370e814d4df21a52e77": {
+                "Name": "achados-perdidos-evidencias-db-1",
+                "EndpointID": "243ae614ded3135afc2d30635a49362bf460db9ba6a19a1b2b508489a9b95a9d",
+                "MacAddress": "b6:2c:ce:ee:84:ae",
+                "IPv4Address": "172.21.0.2/16",
+                "IPv6Address": ""
+            },
+            "cc1833ebc5833fd7df7bd4a5fc8c75d9cd30cf456df1c314e3a81b2bed52b9d8": {
+                "Name": "achados-perdidos-evidencias-web-1",
+                "EndpointID": "0bef406ef7df78594e9610e261edd482e40b5323e25d0e300c7c9c9ad460f35e",
+                "MacAddress": "f6:cc:ec:66:7e:1d",
+                "IPv4Address": "172.21.0.3/16",
+                "IPv6Address": ""
+            },
+            "d52f2af9893e66b431340d8595cb04f037d5e79010571685d46cf4c35a67bb3d": {
+                "Name": "achados-perdidos-evidencias-nginx-1",
+                "EndpointID": "95c86dc1a802bad6ebe0d452b637e78fae3a4624c7d96a6e45513fc87094f576",
+                "MacAddress": "a2:87:ce:94:ba:50",
+                "IPv4Address": "172.21.0.4/16",
+                "IPv6Address": ""
+            }
+        },
+        "Status": {
+            "IPAM": {
+                "Subnets": {
+                    "172.21.0.0/16": {
+                        "IPsInUse": 6,
+                        "DynamicIPsAvailable": 65530
+                    }
+                }
+            }
+        }
+    }
+]

@@ -1,0 +1,89 @@
+# Legenda: docker volume ls/inspect: os dois volumes nomeados, onde ficam fisicamente (Mountpoint) e o conteúdo do volume de fotos.
+# Gerado em: 2026-10-19T23:18:33-03:00 | Projeto Compose: achados-perdidos-evidencias
+# Nota: Porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina; o docker-compose.yml entregue publica 8080 e foi executado sem alterações, apenas com override de porta).
+
+$ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas
+{"fotos_no_volume":3,"itens_no_banco":7}
+
+HTTP 200
+
+$ docker volume ls --filter label=com.docker.compose.project=achados-perdidos-evidencias
+DRIVER    VOLUME NAME
+local     achados-perdidos-evidencias_dados_banco
+local     achados-perdidos-evidencias_fotos
+
+$ docker volume inspect achados-perdidos-evidencias_dados_banco achados-perdidos-evidencias_fotos
+[
+    {
+        "CreatedAt": "2026-10-20T02:17:39Z",
+        "Driver": "local",
+        "Labels": {
+            "com.docker.compose.config-hash": "5ce330b65ebeae921fab462c10257966e597f63f17082ace834a52b4b7a67b20",
+            "com.docker.compose.project": "achados-perdidos-evidencias",
+            "com.docker.compose.version": "5.1.3",
+            "com.docker.compose.volume": "dados_banco"
+        },
+        "Mountpoint": "/var/lib/docker/volumes/achados-perdidos-evidencias_dados_banco/_data",
+        "Name": "achados-perdidos-evidencias_dados_banco",
+        "Options": null,
+        "Scope": "local"
+    },
+    {
+        "CreatedAt": "2026-10-20T02:17:39Z",
+        "Driver": "local",
+        "Labels": {
+            "com.docker.compose.config-hash": "00c844dc5a7bb986f085b1c371a45672492e5d6c03dcb2aa1d238e0874138d96",
+            "com.docker.compose.project": "achados-perdidos-evidencias",
+            "com.docker.compose.version": "5.1.3",
+            "com.docker.compose.volume": "fotos"
+        },
+        "Mountpoint": "/var/lib/docker/volumes/achados-perdidos-evidencias_fotos/_data",
+        "Name": "achados-perdidos-evidencias_fotos",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+
+# O Mountpoint é um caminho dentro do Docker (no Docker Desktop, dentro da VM Linux; no Linux nativo é um
+# diretório real do host em /var/lib/docker/volumes). Em ambos os casos os dados não ficam na pasta do projeto.
+
+$ docker compose exec -T web ls -l /app/uploads
+total 104
+-rw-r--r-- 1 appuser appuser 25497 Oct 20 02:18 2e36313179a74b5b868f17231b71ceb7.png
+-rw-r--r-- 1 appuser appuser 42238 Oct 20 02:18 70097a47e5e74a519f7ed247353cf0ad.png
+-rw-r--r-- 1 appuser appuser 31717 Oct 20 02:18 f2d873cc37b04c1f9d9b23103bdf80a9.png
+
+$ docker compose exec -T db ls /var/lib/postgresql/data
+PG_VERSION
+base
+global
+pg_commit_ts
+pg_dynshmem
+pg_hba.conf
+pg_ident.conf
+pg_logical
+pg_multixact
+pg_notify
+pg_replslot
+pg_serial
+pg_snapshots
+pg_stat
+pg_stat_tmp
+pg_subtrans
+pg_tblspc
+pg_twophase
+pg_wal
+pg_xact
+postgresql.auto.conf
+postgresql.conf
+postmaster.opts
+postmaster.pid
+
+# Pontos de montagem de cada contêiner (o init.sql é um bind mount somente leitura; os dados são volumes nomeados):
+
+$ docker inspect achados-perdidos-evidencias-web-1 --format "{{range .Mounts}}{{.Type}} {{.Name}} -> {{.Destination}} (leitura/escrita: {{.RW}}){{println}}{{end}}"
+volume achados-perdidos-evidencias_fotos -> /app/uploads (leitura/escrita: true)
+
+$ docker inspect achados-perdidos-evidencias-db-1 --format "{{range .Mounts}}{{.Type}} {{.Name}} -> {{.Destination}} (leitura/escrita: {{.RW}}){{println}}{{end}}"
+bind  -> /docker-entrypoint-initdb.d/init.sql (leitura/escrita: false)
+volume achados-perdidos-evidencias_dados_banco -> /var/lib/postgresql/data (leitura/escrita: true)
