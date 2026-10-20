@@ -1,9 +1,9 @@
 # Legenda: Os testes completos repetidos em um clone recém-feito do repositório, depois de cp .env.example .env: o ambiente sobe e passa só com o que está no Git.
-# Gerado em: 2026-10-19T23:14:38-03:00 | Projeto Compose: achados-perdidos-clone
+# Gerado em: 2026-10-19T23:23:18-03:00 | Projeto Compose: achados-perdidos-clone
 # Nota: porta do host usada neste teste: 18080 (a 8080 estava ocupada por outro programa nesta máquina).
 
 $ git clone --quiet --no-hardlinks <repo> <tmp>\achados-perdidos-docker-compose
-(clonado o commit 6df64105048fb6ff35631646867d3baaa700fb39)
+(clonado o commit 91f3a62154620f7071a656c70624b1d8587a3af9)
 
 # O clone recém-feito contém um arquivo .env? não (o .env nunca é versionado)
 
@@ -15,8 +15,8 @@ $ python scripts/testar_ambiente.py --projeto achados-perdidos-clone --porta 180
 === Tarefa 4 - subida do ambiente e testes funcionais ===
 
 --- tarefa4/01-docker-compose-up.txt: docker compose up -d --build constrói a imagem do web e sobe db, web e nginx com um único comando (RNF01), na ordem db -> web -> nginx (RNF05).
-  $ docker compose config --quiet  (0.2s, código 0)
-  $ docker compose up -d --build  (15.6s, código 0)
+  $ docker compose config --quiet  (0.1s, código 0)
+  $ docker compose up -d --build  (15.3s, código 0)
   [OK] RNF01: docker compose up -d --build conclui com código 0 só com o Docker e o arquivo .env
   [OK] RNF05: o web só iniciou depois de o db ficar healthy (ordem na saída do compose)
   [OK] RNF05: o nginx só iniciou depois de o web ficar healthy
@@ -50,18 +50,18 @@ $ python scripts/testar_ambiente.py --projeto achados-perdidos-clone --porta 180
   [OK] RF03: o item cadastrado aparece em GET /itens com foto=/fotos/<nome>
 
 --- tarefa4/07-cadastro-sem-foto-e-validacao.txt: POST /itens sem foto devolve 201 com foto=null; sem o campo obrigatório 'local' devolve 400 (RF03).
-  $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Chave de armario" -F local=Cantina http://localhost:18080/itens  (0.0s, código 0)
+  $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Chave de armario" -F local=Cantina http://localhost:18080/itens  (0.1s, código 0)
   $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=so descricao" http://localhost:18080/itens  (0.0s, código 0)
   [OK] RF03: POST /itens sem foto -> 201 e foto=null
   [OK] RF03: POST /itens sem 'local' -> 400
 
 --- tarefa4/08-estatisticas.txt: GET /estatisticas informa o total de itens no banco e de fotos no volume (RF04).
-  $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas  (0.1s, código 0)
+  $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas  (0.0s, código 0)
   [OK] RF04: GET /estatisticas após os cadastros da Tarefa 4: 5 itens no banco e 1 fotos no volume
 
 --- tarefa4/09-foto-download.txt: GET /fotos/<nome> devolve exatamente o arquivo enviado (mesmo SHA-256) e o nginx acrescenta cabeçalhos de segurança (RF04).
-  $ curl.exe -s -o oculos-baixada.png -w "HTTP %{http_code} tipo=%{content_type} bytes=%{size_download}\n" http://localhost:18080/fotos/79650b2dad714464827d56ae39b7  (0.0s, código 0)
-  $ curl.exe -s -I http://localhost:18080/fotos/79650b2dad714464827d56ae39b7899d.png  (0.0s, código 0)
+  $ curl.exe -s -o oculos-baixada.png -w "HTTP %{http_code} tipo=%{content_type} bytes=%{size_download}\n" http://localhost:18080/fotos/91a1b7215bfa47bcb2ea3c52b123  (0.0s, código 0)
+  $ curl.exe -s -I http://localhost:18080/fotos/91a1b7215bfa47bcb2ea3c52b123979b.png  (0.0s, código 0)
   [OK] RF04: GET /fotos/<nome> -> 200 com o mesmo SHA-256 do arquivo enviado
   [OK] RF04: Content-Type da foto é image/png
 
@@ -95,20 +95,20 @@ $ python scripts/testar_ambiente.py --projeto achados-perdidos-clone --porta 180
 
 --- complementares/04-sistema-de-arquivos-somente-leitura.txt: O sistema de arquivos do web é somente leitura (só /app/uploads e /tmp aceitam escrita) e o init.sql é montado :ro no db.
   $ docker compose exec -T web sh -c "touch /app/teste-gravacao"  (0.2s, código 1)
-  $ docker compose exec -T web sh -c "touch /app/uploads/.teste && rm /app/uploads/.teste && echo 'gravacao em /app/uploads: OK'"  (0.3s, código 0)
+  $ docker compose exec -T web sh -c "touch /app/uploads/.teste && rm /app/uploads/.teste && echo 'gravacao em /app/uploads: OK'"  (0.2s, código 0)
   $ docker compose exec -T db sh -c "echo '-- alteracao indevida' >> /docker-entrypoint-initdb.d/init.sql"  (0.2s, código 1)
   [OK] SEG: o web não consegue gravar fora dos volumes (read_only)
   [OK] SEG: o web consegue gravar em /app/uploads (volume fotos)
   [OK] T3: o bind mount do init.sql é somente leitura
 
---- complementares/05-sem-segredos-na-imagem.txt: A imagem do web não contém senhas: as credenciais só chegam em tempo de execução, vindas do .env (RNF03).
-  $ docker image inspect achados-perdidos-clone-web --format "{{json .Config.Env}}"  (0.1s, código 0)
+--- complementares/05-sem-segredos-na-imagem.txt: A imagem do web não contém senhas: nenhuma variável embutida é de banco e o .env não está em /app; as credenciais só chegam em tempo de execução (RNF03).
+  $ docker image inspect achados-perdidos-clone-web --format "{{range .Config.Env}}{{index (split . \"=\") 0}}{{println}}{{end}}"  (0.1s, código 0)
   $ docker compose exec -T web ls -la /app  (0.2s, código 0)
-  [OK] RNF03: variáveis embutidas na imagem do web não incluem senha
+  [OK] RNF03: variáveis embutidas na imagem do web não incluem senha (nomes e valores verificados)
   [OK] RNF03: o arquivo .env não está dentro da imagem (/app)
 
 --- complementares/06-docker-network-inspect.txt: docker network inspect da rede_interna: rede bridge definida pelo usuário com os contêineres db, web e nginx.
-  $ docker network inspect achados-perdidos-clone_rede_interna  (0.1s, código 0)
+  $ docker network inspect achados-perdidos-clone_rede_interna  (0.0s, código 0)
   [OK] T3: rede_interna é do tipo bridge e contém db, web e nginx
 
 --- complementares/07-docker-image-ls.txt: docker image ls: tamanho da imagem do web (base python:3.12-slim + dependências) comparado às imagens oficiais usadas.
@@ -122,7 +122,7 @@ $ python scripts/testar_ambiente.py --projeto achados-perdidos-clone --porta 180
 === Tarefa 5.1 - recriação dos contêineres (down + up -d) ===
 
 --- tarefa5/01-recriacao-conteineres.txt: docker compose down + up -d recria os contêineres e, mesmo assim, itens e fotos continuam lá (RNF02).
-  $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas  (0.1s, código 0)
+  $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas  (0.0s, código 0)
   [OK] T5.1: GET /estatisticas antes dos cadastros: 5 itens no banco e 1 fotos no volume
   $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Carregador de celular" -F local=Biblioteca -F foto=@carregador.png http://localhost:18080/itens  (0.1s, código 0)
   $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Mochila azul" -F "local=Laboratorio 3" -F foto=@mochila.png http://localhost:18080/itens  (0.1s, código 0)
@@ -130,11 +130,11 @@ $ python scripts/testar_ambiente.py --projeto achados-perdidos-clone --porta 180
   [OK] T5.1: GET /estatisticas antes do down: 7 itens no banco e 3 fotos no volume
   $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens  (0.0s, código 0)
   $ docker compose exec -T web sh -c "cd /app/uploads && sha256sum * | sort -k2"  (0.2s, código 0)
-  $ docker compose exec -T web ls -l /app/uploads  (0.3s, código 0)
+  $ docker compose exec -T web ls -l /app/uploads  (0.2s, código 0)
   $ docker compose down  (2.1s, código 0)
-  $ docker compose ps -a  (0.3s, código 0)
+  $ docker compose ps -a  (0.2s, código 0)
   $ docker volume ls --filter label=com.docker.compose.project=achados-perdidos-clone  (0.1s, código 0)
-  $ docker compose up -d  (13.0s, código 0)
+  $ docker compose up -d  (12.9s, código 0)
   $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas  (0.0s, código 0)
   [OK] RNF02: GET /estatisticas depois de down + up -d: 7 itens no banco e 3 fotos no volume
   $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens  (0.0s, código 0)
@@ -149,23 +149,23 @@ $ python scripts/testar_ambiente.py --projeto achados-perdidos-clone --porta 180
 --- tarefa5/02-inspecao-volumes.txt: docker volume ls/inspect: os dois volumes nomeados, onde ficam fisicamente (Mountpoint) e o conteúdo do volume de fotos.
   $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas  (0.0s, código 0)
   [OK] T5.2: GET /estatisticas antes da inspeção: 7 itens no banco e 3 fotos no volume
-  $ docker volume ls --filter label=com.docker.compose.project=achados-perdidos-clone  (0.1s, código 0)
-  $ docker volume inspect achados-perdidos-clone_dados_banco achados-perdidos-clone_fotos  (0.1s, código 0)
+  $ docker volume ls --filter label=com.docker.compose.project=achados-perdidos-clone  (0.0s, código 0)
+  $ docker volume inspect achados-perdidos-clone_dados_banco achados-perdidos-clone_fotos  (0.0s, código 0)
   $ docker compose exec -T web ls -l /app/uploads  (0.2s, código 0)
   $ docker compose exec -T db ls /var/lib/postgresql/data  (0.2s, código 0)
   $ docker inspect achados-perdidos-clone-web-1 --format "{{range .Mounts}}{{.Type}} {{.Name}} -> {{.Destination}} (leitura/escrita: {{.RW}}){{println}}{{end}}"  (0.0s, código 0)
-  $ docker inspect achados-perdidos-clone-db-1 --format "{{range .Mounts}}{{.Type}} {{.Name}} -> {{.Destination}} (leitura/escrita: {{.RW}}){{println}}{{end}}"  (0.1s, código 0)
+  $ docker inspect achados-perdidos-clone-db-1 --format "{{range .Mounts}}{{.Type}} {{.Name}} -> {{.Destination}} (leitura/escrita: {{.RW}}){{println}}{{end}}"  (0.0s, código 0)
   [OK] T5.2: docker volume inspect mostra os volumes dados_banco e fotos (driver local) com Mountpoint próprio
   [OK] T3: db monta dados_banco em /var/lib/postgresql/data e o init.sql como bind somente leitura
 
 === Bônus B - backup e restauração do volume fotos ===
 
 --- bonus/05-backup-e-restauracao-fotos.txt: Backup do volume fotos em .tar.gz com um contêiner temporário (docker run --rm) e restauração em um volume novo, com SHA-256 idênticos.
-  $ python scripts/backup_fotos.py backup --volume achados-perdidos-clone_fotos --saida <tmp>\backups  (2.1s, código 0)
+  $ python scripts/backup_fotos.py backup --volume achados-perdidos-clone_fotos --saida <tmp>\backups  (2.0s, código 0)
   [OK] BONUS-B: o backup gerou um arquivo .tar.gz não vazio
-  $ python scripts/backup_fotos.py restaurar --arquivo <tmp>\backups\fotos-20261019-231400.tar.gz --volume-destino achados-perdidos-clone_fotos_restaurado  (2.2s, código 0)
-  $ docker run --rm --mount type=volume,source=achados-perdidos-clone_fotos,target=/dados,readonly alpine:3.24 sh -c "cd /dados && sha256sum * | sort -k2"  (1.0s, código 0)
-  $ docker run --rm --mount type=volume,source=achados-perdidos-clone_fotos_restaurado,target=/dados,readonly alpine:3.24 sh -c "cd /dados && sha256sum * | sort -k2  (0.9s, código 0)
+  $ python scripts/backup_fotos.py restaurar --arquivo <tmp>\backups\fotos-20261019-232240.tar.gz --volume-destino achados-perdidos-clone_fotos_restaurado  (2.2s, código 0)
+  $ docker run --rm --mount type=volume,source=achados-perdidos-clone_fotos,target=/dados,readonly alpine:3.24 sh -c "cd /dados && sha256sum * | sort -k2"  (1.1s, código 0)
+  $ docker run --rm --mount type=volume,source=achados-perdidos-clone_fotos_restaurado,target=/dados,readonly alpine:3.24 sh -c "cd /dados && sha256sum * | sort -k2  (1.1s, código 0)
   $ docker volume rm achados-perdidos-clone_fotos_restaurado  (0.1s, código 0)
   [OK] BONUS-B: a restauração em volume novo preserva o dono dos arquivos (UID 10001)
   [OK] BONUS-B: volume restaurado tem os mesmos arquivos e SHA-256 do volume original
@@ -176,13 +176,13 @@ $ python scripts/testar_ambiente.py --projeto achados-perdidos-clone --porta 180
   $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas  (0.0s, código 0)
   [OK] T5.3: GET /estatisticas antes do down -v: 7 itens no banco e 3 fotos no volume
   $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens  (0.0s, código 0)
-  $ docker compose down -v  (2.2s, código 0)
+  $ docker compose down -v  (2.1s, código 0)
   $ docker volume ls --filter label=com.docker.compose.project=achados-perdidos-clone  (0.1s, código 0)
   $ docker compose up -d  (13.0s, código 0)
   $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/estatisticas  (0.0s, código 0)
   [OK] T5.3: GET /estatisticas depois do down -v + up -d: 3 itens no banco e 0 fotos no volume
   $ curl.exe -s -w "\nHTTP %{http_code}\n" http://localhost:18080/itens  (0.0s, código 0)
-  $ curl.exe -s -I http://localhost:18080/fotos/0f69023244114e508bb32c5c503f9b6b.png  (0.0s, código 0)
+  $ curl.exe -s -I http://localhost:18080/fotos/91c5e6fd31a246c2b04b326cd7bef6da.png  (0.0s, código 0)
   $ docker compose exec -T web ls -l /app/uploads  (0.2s, código 0)
   $ docker compose logs db  (0.2s, código 0)
   [OK] T5.3: o down -v removeu os dois volumes
@@ -206,10 +206,10 @@ $ python scripts/testar_ambiente.py --projeto achados-perdidos-clone --porta 180
   [OK] BONUS-A: upload de ~11 MB é recusado pelo proxy -> 413 (limite de 10 MB)
 
 --- bonus/03-nginx-fotos-cabecalhos-de-seguranca.txt: Em /fotos/ o nginx força download de arquivos que não são imagem (ex.: .html enviado como foto) e adiciona nosniff e CSP.
-  $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Arquivo html enviado como foto" -F local=Teste -F foto=@nao-e-foto.html http://localhost:18080/itens  (0.0s, código 0)
-  $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Foto pequena" -F local=Teste -F foto=@pequena.png http://localhost:18080/itens  (0.1s, código 0)
-  $ curl.exe -s -I http://localhost:18080/fotos/306eb3efdda14a35851669c8ebae2614.html  (0.0s, código 0)
-  $ curl.exe -s -I http://localhost:18080/fotos/23bdc4c1f61046499048801aee567309.png  (0.0s, código 0)
+  $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Arquivo html enviado como foto" -F local=Teste -F foto=@nao-e-foto.html http://localhost:18080/itens  (0.1s, código 0)
+  $ curl.exe -s -w "\nHTTP %{http_code}\n" -F "descricao=Foto pequena" -F local=Teste -F foto=@pequena.png http://localhost:18080/itens  (0.0s, código 0)
+  $ curl.exe -s -I http://localhost:18080/fotos/9c65d13cf1074dbaaeff67c02120eb66.html  (0.0s, código 0)
+  $ curl.exe -s -I http://localhost:18080/fotos/67b4785afae4439295a1968d12cc7250.png  (0.0s, código 0)
   [OK] BONUS-A: o .html enviado como foto é servido com Content-Disposition: attachment (único cabeçalho)
   [OK] BONUS-A: a imagem PNG é servida inline (único Content-Disposition)
   [OK] BONUS-A: as fotos levam X-Content-Type-Options: nosniff e Content-Security-Policy com sandbox
@@ -218,12 +218,12 @@ $ python scripts/testar_ambiente.py --projeto achados-perdidos-clone --porta 180
   [OK] BONUS-C: sem o profile debug o adminer não está no ambiente
 
 --- bonus/04-adminer-profile-debug.txt: O Adminer só sobe com --profile debug, escuta apenas em 127.0.0.1, alcança o db pela rede interna (sem publicar 5432) e é encerrado sozinho.
-  $ docker compose config --services  (0.1s, código 0)
+  $ docker compose config --services  (0.2s, código 0)
   $ docker compose ps -a  (0.2s, código 0)
-  $ docker compose --profile debug up -d  (1.7s, código 0)
+  $ docker compose --profile debug up -d  (1.6s, código 0)
   $ docker compose ps  (0.2s, código 0)
   $ curl.exe -sI http://127.0.0.1:8081/  (0.0s, código 0)
-  $ docker compose exec -T adminer php -r "$s=@fsockopen('db',5432,$e,$m,3); echo $s ? 'conectado a db:5432 pela rede interna' : 'falhou: '.$m; echo PHP_EOL;"  (0.2s, código 0)
+  $ docker compose exec -T adminer php -r "$s=@fsockopen('db',5432,$e,$m,3); echo $s ? 'conectado a db:5432 pela rede interna' : 'falhou: '.$m; echo PHP_EOL;"  (0.3s, código 0)
   $ docker inspect achados-perdidos-clone-db-1 --format "portas do db publicadas no host: {{json .NetworkSettings.Ports}}"  (0.1s, código 0)
   $ docker compose rm -sf adminer  (0.7s, código 0)
   $ docker compose ps -a  (0.2s, código 0)
